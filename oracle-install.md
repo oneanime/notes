@@ -17,22 +17,26 @@ cp /etc/sysconfig/oracledb_ORCLCDB-19c.conf /etc/sysconfig/oracledb_配置的sid
 > 通过这个文件来决定怎么样找一个连接中出现的连接字符串  
 例如sqlplus sys/oracle@ora  
 那么，客户端就会首先在tnsnames.ora文件中找ora的记录.如果没有相应的记录则尝试把ora当作一个主机名，通过网络的途径去解析它的 ip地址然后去连接这个ip上GLOBAL_DBNAME=ora这个实例，当然我这里ora并不是一个主机名  
+
+```
 SQLNET.AUTHENTICATION_SERVICES= (NONE)  
 NAMES.DIRECTORY_PATH= (TNSNAMES,HOSTNAME,EZCONNECT)
+```
 * tnsnames.ora
 > 这个文件类似于unix 的hosts文件，提供的tnsname到主机名或者ip的对应  
 
->ORA_TEST =  
+```
+ORA_TEST =  
 (DESCRIPTION =  
-&emsp;(ADDRESS_LIST =  
-&emsp;&emsp;(ADDRESS = (PROTOCOL = TCP)(HOST = LXL)(PORT = 1521))  
-&emsp;)  
-&emsp;(CONNECT_DATA =  
-&emsp;&emsp;(SERVER = DEDICATED)  
-&emsp;&emsp;(SERVICE_NAME = ora)  
-&emsp;)  
+    (ADDRESS_LIST =  
+        (ADDRESS = (PROTOCOL = TCP)(HOST = LXL)(PORT = 1521))  
+    )  
+    (CONNECT_DATA =  
+        (SERVER = DEDICATED)  
+        (SERVICE_NAME = ora)  
+    )  
 ) 
-
+```
 >参数解释  
 ORA_TEST：客户端连接服务器端使用的服务别名。注意一定要顶行书写，否则会无法识别服务别名。   
 PROTOCOL：客户端与服务器端通讯的协议，一般为TCP，该内容一般不用改。   
@@ -42,20 +46,21 @@ SERVICE_NAME：在服务器端，用system用户登陆后，sqlplus> show parame
 
 * listener.ora
 > listener监听器进程的配置文件  
+```
+SID_LIST_LISTENER =  
+    (SID_LIST =   
+        (SID_DESC =   
+        (GLOBAL_DBNAME = hp)    
+        (ORACLE_HOME = /opt/oracle/product/19c/dbhome_1/)  
+        (SID_NAME = hp)    
+        )   
+    )  
 
-> SID_LIST_LISTENER =  
-&emsp;(SID_LIST =   
-&emsp;&emsp;(SID_DESC =   
-&emsp;&emsp;(GLOBAL_DBNAME = hp)    
-&emsp;&emsp;(ORACLE_HOME = /opt/oracle/product/19c/dbhome_1/)  
-&emsp;&emsp;(SID_NAME = hp)    
-&emsp;&emsp;)   
-&emsp;)  
 LISTENER =  
-&emsp;(DESCRIPTION =  
-&emsp;&emsp;(ADDRESS = (PROTOCOL = TCP)(HOST = hostname)(PORT = 1521))  
-&emsp;)
-
+    (DESCRIPTION =  
+        (ADDRESS = (PROTOCOL = TCP)(HOST = hostname)(PORT = 1521))  
+    )
+```
 >参数解释  
 LISTENER ：监听名称，可以配置多个监听，多个监听的端口号要区分开来。 
 GLOBAL_DBNAME ：全局数据库名。通过select * from global_name; 查询得出  
