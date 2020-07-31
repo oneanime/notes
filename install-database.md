@@ -74,7 +74,7 @@ alter user root@'localhost' identified by '123456sql';
 flush privileges;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456';
 ```
-> 精简配置  
+> ### 精简配置  
 ```
 mysql 安装
 rpm -qa |grep mariadb，yum remove .... -y
