@@ -1,4 +1,4 @@
-## 安装
+## 1. 安装
 ```
 1.安装好linux
     /boot 200M 
@@ -70,7 +70,7 @@ scp -r /home/hp/.ssh hp@hadoop101:/home/hp/.ssh
 ```
 配置JAVA_HOME、HADOOP_HOME
 ```
-### core-site.xml
+#### core-site.xml
 ```
 <property>
           <name>fs.defaultFS</name>
@@ -116,7 +116,7 @@ scp -r /home/hp/.ssh hp@hadoop101:/home/hp/.ssh
     	<value>com.hadoop.compression.lzo.LzoCodec</value>
     </property>
 ```
-### hdfs-site.xml
+#### hdfs-site.xml
 ```
 <property>
     <name>dfs.replication</name>
@@ -132,18 +132,18 @@ scp -r /home/hp/.ssh hp@hadoop101:/home/hp/.ssh
     <value>0f</value>
 </property>  
 ```
-### mapred-site.xml
+#### mapred-site.xml
 ```
 <property>  
     <name>mapreduce.framework.name</name>  
     <value>yarn</value>  
 </property>
 ```
-### workers/slaves
+#### workers/slaves
 ```
 配置datanode的地址
 ```
-### yarn-site.xml
+#### yarn-site.xml
 ```
 <!-- Reducer获取数据的方式 -->
 <property>
@@ -196,3 +196,166 @@ scp -r /home/hp/.ssh hp@hadoop101:/home/hp/.ssh
     <value>http://192.168.79.200:19888/jobhistory/logs</value>
 </property>
 ```
+#### 启动停止
+```
+nodename节点启动停止start/stop-dfs.sh
+namemanage节点启动停止start/stop-yarn.sh
+```
+> #### 建立本地数据的文件夹，并赋予权限
+> #### hadoop namenode -format
+> #### 一般失败初始化，删文件夹，重新执行命令
+## 2. 版本升级
+```
+在老版本中的hdfs-site.xml添加
+<property>
+      <name>dfs.namenode.duringRollingUpgrade.enable</name>
+      <value>true</value>
+</property>
+
+1、启动旧版本hadoop
+2、进入安全模式
+hdfs dfsadmin -safemode enter
+3、创建用于回滚的fsimage
+hdfs dfsadmin -rollingUpgrade prepare 
+4、检查回滚映像的状态。等待并重新运行该命令，直到显示“继续滚动升级”消息
+hdfs dfsadmin -rollingUpgrade query
+5、关闭旧hadoop，把新的hadoop的hadoop.tmp.dir指向旧的文件夹，或者拷过去
+6、新的hadoop
+bin/hdfs --daemon start namenode -rollingUpgrade started
+bin/hdfs --daemon start secondarynamenode
+bin/hdfs --daemon start datanode
+bin/hdfs dfsadmin -rollingUpgrade finalize
+```
+
+## 3. HA配置
+#### core-site.xml
+```
+ <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://mycluster</value>
+    </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/opt/module/hadoop/data/tmp</value>
+    </property>
+    <property>   
+        <name>hadoop.proxyuser.hp.hosts</name>     
+        <value>*</value> 
+    </property> 
+    <property>   
+        <name>hadoop.proxyuser.hp.groups</name>         
+        <value>*</value>   
+    </property>
+    <property>
+        <name>io.compression.codecs</name>
+        <value>
+            org.apache.hadoop.io.compress.GzipCodec,
+            org.apache.hadoop.io.compress.DefaultCodec,
+            org.apache.hadoop.io.compress.BZip2Codec,
+            org.apache.hadoop.io.compress.SnappyCodec,
+            com.hadoop.compression.lzo.LzoCodec,
+            com.hadoop.compression.lzo.LzopCodec
+        </value>
+    </property>
+    <property>
+        <name>io.compression.codec.lzo.class</name>
+        <value>com.hadoop.compression.lzo.LzoCodec</value>
+    </property>
+    <property>
+        <name>ha.zookeeper.quorum</name>
+        <value>hadoop101:2181,hadoop102:2181,hadoop103:2181</value>
+    </property>
+```
+#### hdfs-site.xml
+```
+<property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.nameservices</name>
+        <value>mycluster</value>
+    </property>
+    <property>
+        <name>dfs.ha.namenodes.mycluster</name>
+        <value>nn1,nn2</value>
+    </property>
+    <property>
+        <name>dfs.namenode.rpc-address.mycluster.nn1</name>
+        <value>hadoop101:9000</value>
+    </property>
+    <property>
+        <name>dfs.namenode.rpc-address.mycluster.nn2</name>
+        <value>hadoop102:9000</value>
+    </property>
+    <property>
+        <name>dfs.namenode.http-address.mycluster.nn1</name>
+        <value>hadoop101:50070</value>
+    </property>
+    <property>
+        <name>dfs.namenode.http-address.mycluster.nn2</name>
+        <value>hadoop102:50070</value>
+    </property>
+    <property>
+        <name>dfs.namenode.shared.edits.dir</name>
+        <value>qjournal://hadoop101:8485;hadoop102:8485;hadoop103:8485/mycluster</value>
+    </property>
+    <property>
+        <name>dfs.ha.fencing.methods</name>
+        <value>shell(/bin/true)</value>
+    </property>
+    <property>
+        <name>dfs.ha.fencing.ssh.private-key-files</name>
+        <value>/home/hp/.ssh/id_rsa</value>
+    </property>
+    <property>
+        <name>dfs.journalnode.edits.dir</name>
+        <value>/opt/module/hadoop/data/jn</value>
+    </property>
+    <property>
+        <name>dfs.permissions.enable</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>dfs.client.failover.proxy.provider.mycluster</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+    </property>
+    <property>
+	<name>dfs.ha.automatic-failover.enabled</name>
+	<value>true</value>
+    </property>
+```
+#### mapred-site.xml
+```
+<property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+</property>
+```
+#### 初始化
+>sbin/hadoop-daemon.sh start journalnode    #各个节点上启动，只启动一个format会失败
+
+>bin/hdfs namenode -format #在nn1上执行
+
+>sbin/hadoop-daemon.sh start namenode        #启动nn1
+
+>bin/hdfs namenode -bootstrapStandby          # 在nn2上执行，同步nn1的元数据
+
+>sbin/hadoop-daemon.sh start namenode        #启动nn2
+
+>sbin/hadoop-daemons.sh start datanode        # 启动所有的dn
+
+>bin/hdfs haadmin -transitionToActive nn1      #  激活nn1，默认时观察状态  
+>bin/hdfs haadmin -getServiceState nn1          #  是否激活
+
+>启动故障转移先启动zk  
+>bin/hdfs zkfc -formatZK  
+>下一次启动直接  
+>sbin/start-dfs.sh   上面的会一起启动
+
+>yarn ha  
+>先启动dfs  
+>在rm所在节点启动rm和nm  
+>在配置了其他rm的节点，启动rm  
+>sbin/yarn-daemon.sh start resourcemanager  
+>bin/yarn rmadmin -getServiceState rm1 查看状态
