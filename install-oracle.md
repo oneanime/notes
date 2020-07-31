@@ -89,5 +89,18 @@ export PATH=$PATH:$ORACLE_HOME/bin
 ```
 
 ### [样例数据库](https://codeload.github.com/oracle/db-sample-schemas/tar.gz/v19c)
+```
+@mksample.sql 1 1 1 1 1 1 1 1 USERS temp /opt/software/db-sample-schemas-19.2/logs/ db:1521/ora19cpdb
+alter session set container=ora19cpdb
+ORA19CPDB
+
+alter pluggable database ora19cpdb  open;
+
+SELECT OWNER,OBJECT_TYPE, COUNT(1) FROM DBA_OBJECTS where owner='HR';
+
+create tablespace ora19cpdb01 datafile '/opt/oracle/oradata/ORA19C/ora19cpdb01.dbf' size 1024m;
+
+drop tablespace XFTBS including contents and datafiles cascade constraint;
+```
 
 
