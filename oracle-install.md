@@ -88,6 +88,6 @@ export NLS_LANG=AMERICAN_AMERICA.AL32UTF8
 export PATH=$PATH:$ORACLE_HOME/bin
 ```
 
-
+### [样例数据库](https://codeload.github.com/oracle/db-sample-schemas/tar.gz/v19c)
 
 
