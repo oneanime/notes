@@ -115,6 +115,17 @@ socket=/tmp/mysql.sock
 
 useSSL=false&useUnicode=true&characterEncoding=UTF-8
 ```
+```
+#开启binlog
+server-id= 1
+#日志的前缀
+log-bin=mysql-bin
+binlog_format=row
+#监控的数据库
+binlog-do-db=gmallXXXXX
+
+```
+
 >报错 mysqld: error while loading shared libraries: libaio.so.1: cannot open shared object file: No such file or directory  
 解决：yum install -y libaio-devel
 
