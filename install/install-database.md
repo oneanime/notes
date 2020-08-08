@@ -99,6 +99,7 @@ port=3306
 socket=/tmp/mysql.sock
 ---------------------------------------
 3.mysqld --initialize --user=mysql --basedir=/opt/module/mysql --datadir=/opt/module/mysql/data
+cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
 4.重启服务
 5.mysql -uroot -p
 6.mysql> use mysql; 
