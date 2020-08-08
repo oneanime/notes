@@ -3,6 +3,7 @@
 # 环境准备
 yum remove mariadb-libs-5.5.60-1.el7_5.x86_64 -y
 rpm -qa |grep mariadb
+sudo yum install ncurses-compat-libs
 useradd -s /sbin/nologin mysql  # 创建用户
 ```
 ```
@@ -70,6 +71,7 @@ service mysqld restart
 ```
 ```
 # 修改密码
+配置文件中添加skip-grant-tables
 alter user root@'localhost' identified by '123456sql';
 flush privileges;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456';
