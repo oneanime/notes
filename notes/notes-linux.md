@@ -32,3 +32,10 @@
 #### 开机启动或关闭 
 >systemctl list-unit-files | grep enable  
 >systemctl disabled/enable/is-enabled
+
+#### 防护墙
+>1. systemctl status firewalld.service
+>2. systemctl start firewalld.service
+>3. systemctl stop firewalld.service
+>4. systemctl enable firewalld.service
+>5. systemctl disable firewalld.service
