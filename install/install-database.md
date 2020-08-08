@@ -134,6 +134,7 @@ binlog-do-db=gmallXXXXX
 
 ## 2. redis安装
 ```
+yum -y install gcc gcc-c++ libstdc++-devel
 make
 make install
 make PREFIX=/opt/module/redis install
