@@ -208,4 +208,10 @@ vim /etc/sysctl.conf
 vim config/jvm.options
 -Xms256m
 -Xmx256m
+
+3. 安装kibana
+    server.port
+    server.host: "0.0.0.0"
+    server.name
+    elasticsearch.hosts
 ```
