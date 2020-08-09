@@ -39,3 +39,6 @@
 >3. systemctl stop firewalld.service
 >4. systemctl enable firewalld.service
 >5. systemctl disable firewalld.service
+
+#### 脚本中杀进程
+> ps -ef | grep 进程名 | grep -v grep | awk '{print $2}' | xargs kill -9
