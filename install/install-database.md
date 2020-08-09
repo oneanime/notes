@@ -194,6 +194,7 @@ listen_addresses = '*'
     bootstrap.memory_lock: false
     network.host 绑定每个节点的ip
     discovery.seed_hosts: ["ip1","ip2"...]
+    cluster.initial_master_nodes: ["ip"]  指定master
 2. 虚拟机中配置
 vim /etc/security/limits.conf 
     * soft nofile 65536 
