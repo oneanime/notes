@@ -128,6 +128,11 @@ binlog_format=row
 binlog-do-db=gmallXXXXX
 
 ```
+>报错 Access denied for user 'root'@'hadoop-master' (using password: YES)  
+>在用root给某个账户赋权限时，报这个错  
+>select Host,User,Grant_priv,Super_priv from user;  
+>UPDATE mysql.user SET Grant_priv='Y', Super_priv='Y' WHERE User='root';
+>FLUSH PRIVILEGES;
 
 >报错 mysqld: error while loading shared libraries: libaio.so.1: cannot open shared object file: No such file or directory  
 解决：yum install -y libaio-devel
