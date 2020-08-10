@@ -6,10 +6,14 @@
 >2. 重启mysql
 >3. show variables like 'log_%';    #验证log_bin是否开启
 >4. CREATE DATABASE maxwell ;  
-    CREATE USER maxwell IDENTIFIED BY '123456sql';  
-    GRANT ALL   ON maxwell.* TO 'maxwell'@'%' IDENTIFIED BY '123456sql';    
-    GRANT  SELECT ,REPLICATION SLAVE , REPLICATION CLIENT  ON *.* TO maxwell@'%'  
-    FLUSH PRIVILEGES;    
+>   CREATE USER maxwell IDENTIFIED BY '123456sql';  
+>   GRANT ALL ON maxwell.* TO 'maxwell'@'%' IDENTIFIED BY '123456sql';  
+>   GRANT SELECT ,REPLICATION SLAVE , REPLICATION CLIENT ON \*.* TO maxwell@'%'  
+>   FLUSH PRIVILEGES;    
+
+      
+    
+    
 
 #### 配置maxwell
 ```
