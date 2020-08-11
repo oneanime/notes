@@ -20,7 +20,7 @@
 producer=kafka
 kafka.bootstrap.servers=hadoop1:9092,hadoop2:9092,hadoop3:9092
 kafka_topic=ODS_DB_GMALL2020_M
-
+            maxwell_%{database}_%{table}  分流
 host=hadoop2
 user=maxwell
 password=123123
