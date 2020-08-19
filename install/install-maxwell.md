@@ -31,3 +31,10 @@ client_id=maxwell_1
 # 启动
 /ext/maxwell-1.25.0/bin/maxwell --config  /xxx/xxxx/maxwell.properties >/dev/null 2>&1 &
 ```
+
+#### 启动bootstrap初始化导入数据
+```
+法一 bin/maxwell-bootstrap --user maxwell  --password 123456sql --host 192.168.79.200  --database gmall01 --table base_province --client_id maxwell_1
+法二、 insert into maxwell.bootstrap (database_name, table_name) values ("fooDB", "barTable");
+具体文档：https://github.com/zendesk/maxwell/blob/master/docs/docs/bootstrapping.md
+```
