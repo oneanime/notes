@@ -30,6 +30,7 @@ client_id=maxwell_1
 ```
 # 启动
 /ext/maxwell-1.25.0/bin/maxwell --config  /xxx/xxxx/maxwell.properties >/dev/null 2>&1 &
+bin/maxwell --user='maxwell' --password='123456sql' --host='192.168.79.200' --producer=kafka --kafka.bootstrap.servers=192.168.79.200:9092 --filter = 'exclude: *.*, include: gmall01.*'
 ```
 
 #### 启动bootstrap初始化导入数据
