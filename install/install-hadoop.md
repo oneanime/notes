@@ -359,3 +359,15 @@ bin/hdfs dfsadmin -rollingUpgrade finalize
 >在配置了其他rm的节点，启动rm  
 >sbin/yarn-daemon.sh start resourcemanager  
 >bin/yarn rmadmin -getServiceState rm1 查看状态
+
+
+### 报错解决方案
+> WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+> export HADOOP_ROOT_LOGGER=DEBUG,console之后随便执行命令，出现 \
+> Trying to load the custom-built native-hadoop.... \
+> Failed to load native-hadoop with error: java.lang.UnsatisfiedLinkError: no hadoop in java.library.path
+```
+解决方案：在hadoop-env.sh中写入export HADOOP_OPTS="-Djava.library.path=${HADOOP_HOME}/lib/native"  
+```
+
+
