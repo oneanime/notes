@@ -18,8 +18,8 @@ password required pam_deny.so
 ```
 - 远程连接
 ```
-pg_hba.conf
-host    all             all             0.0.0.0/0 all
-postgresql.conf
+vim /var/lib/pgsql/<版本>/data/pg_hba.conf
+host    all             all             0.0.0.0/0     METHOD(可选ident，md5，password，trust，reject)
+vim /var/lib/pgsql/<版本>/data/postgresql.conf
 listen_addresses = '*'
 ```
