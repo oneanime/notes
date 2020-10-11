@@ -86,7 +86,7 @@ root用户下创建mysql用户，useradd -s /sbin/nologin mysql
 2.mkdir data
 3.vim /etc/my.cnf
 -------------------------------------
- [mysqld]
+[mysqld]
 user=mysql
 basedir=/opt/module/mysql
 datadir=/opt/module/mysql/data
@@ -118,6 +118,37 @@ cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
 
 useSSL=false&useUnicode=true&characterEncoding=UTF-8
 ```
+> ### yum安装 mysql8
+```
+1. 在https://dev.mysql.com/downloads/repo/yum/ 中下载对应系统的rpm
+   yum localinstall 下载的文件
+2. 验证yum search mysql
+3. yum install mysql-community-server
+   如果比较慢，会在/var/cache/yum/x86_64/7/mysql80-community/packages路径下生成对应要下载的缓存文件，手动下载，放到路径下
+   注：https://mirrors.ustc.edu.cn/mysql-ftp/downloads/或http://uni.mirrors.163.com/mysql/downloads/
+4. service mysqld start
+   service mysqld status
+5. cat /var/log/mysqld.log | grep password
+6. mysql -u root -p
+7. flush privileges;
+8. update user set plugin='mysql_native_password' where user ='root'; #修改密码规则
+9. update mysql.user set grant_priv='Y', super_priv='Y' where user='root'; flush privileges;
+10. set global validate_password.policy=0;
+    set global validate_password.length=1;
+    show variables like 'validate_password%';
+    set global validate_password.policy=low;
+    注：设置支持简单密码
+11. select host, user, authentication_string, plugin from user; #查看root信息
+12. update user set authentication_string='' where user='root'; #置空密码
+13. alter user 'root'@'%' identified with mysql_native_password by '123456sql';flush privileges; #重新设置密码
+14. select host,user from user;
+    update user set host= '%' where user = 'root';
+    vim /etc/my.cnf  中添加
+    port=3306
+    bind-address = 0.0.0.0
+    default-time_zone = '+8:00'
+```
+
 ```
 #开启binlog
 server-id= 1
