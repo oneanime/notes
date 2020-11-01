@@ -138,3 +138,14 @@
     </build>
 ```
 
+命令行下载jar包
+
+```
+方法一：
+mvn dependency:get -DremoteRepositories=https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -DgroupId=com.fasterxml.jackson.datatype -DartifactId=jackson-datatype-jsr310 -Dversion=2.11.3
+
+方法二：
+创建pom.xml文件
+mvn -f pom.xml dependency:copy-dependencies
+```
+
