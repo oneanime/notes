@@ -46,3 +46,8 @@
 #### linux物理断电，有时候会出现generating “/run/initramfs/rdsosreport.txt”.....这种错误
 >xfs_repair /dev/mapper/centos-root或xfs_repair /dev/mapper/centos-root -L  
 >reboot
+
+#### 如果ifconfig没有地址出现
+>systemctl stop NetworkManager
+>systemctl disable NetworkManager
+>systemctl restart network
