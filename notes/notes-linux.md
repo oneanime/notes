@@ -51,3 +51,18 @@
 >systemctl stop NetworkManager
 >systemctl disable NetworkManager
 >systemctl restart network
+
+#### 硬盘挂载
+```
+fdisk -l             # 查看系统分区情况
+fdisk /dev/sdb       # 进入分区模式
+在 command（m for help）：后输入 m 进行帮助
+输入 n 增加一个新的分区
+fdisk -l             # 查看系统分区情况
+mkfs.ext3 /dev/sdb1  # 格式化分区，出现Proceed anyway？（y，n）时，这时输入“y”回车。  
+mount /dev/sdb1 /mnt # 挂载分区
+df -h                # 查看分区挂载情况
+blkid /dev/sdb1  ---> uuid type
+vim /etc/fstab
+末尾添加 uuid 挂载的目录（/mnt）type defaults 0 2
+```
