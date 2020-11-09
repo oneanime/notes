@@ -278,7 +278,7 @@ Ftime（日期）、user_id（用户id）、login_id（登录id）、login_loc�
 33.一个表 test(name,price),构建一个新表,将name相同的,price所有价格合并到一个字段里面  
 34.如何将题33中price合并后的prices 字段再拆分为多条记录？  
 
-35. 见下图
+35.见下图
 ![Image text](https://raw.githubusercontent.com/hadoopcode/notes/master/img/img1.jpg) 
 
 
