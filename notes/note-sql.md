@@ -263,6 +263,13 @@ Ftime（日期）、user_id（用户id）、login_id（登录id）、login_loc�
 
 |area| year| temperature|
 |----|-----|------------|
+
+28.如下表  
+![Image text](https://raw.githubusercontent.com/hadoopcode/notes/master/img/sql-table1.png)
+1.写出用户表 tb_cuid_1d的 20200401 的次日、次7日留存的具体HQL ：一条sql统计出以下指标 （4.1号uv，4.1号在4.2号的留存uv，4.1号在4.8号的留存uv）(一条sql写完)  
+2.统计当天不同平台、版本下的uv、pv  
+3.解析ext中所有的"type"( lateral view explode)  
+
    		
    			
 
