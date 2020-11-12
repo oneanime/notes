@@ -99,10 +99,10 @@
 
 9.分组查出销售表中所有会员购买金额，同时分组查出退货表中所有会员的退货金额，把会员id相同的购买金额-退款金额    	得到的结果更新到表会员表中对应会员的积分字段（credits）
 
-- 有三张表分别为会员表（member）销售表（sale）退货表（regoods）\
+- 有三张表分别为会员表（member）销售表（sale）退货表（regoods) \
 (1)会员表有字段memberid（会员id，主键）credits（积分) \
-(2)销售表有字段memberid（会员id，外键）购买金额（MNAccount）\ 
-(3)退货表中有字段memberid（会员id，外键）退货金额（RMNAccount）\
+(2)销售表有字段memberid（会员id，外键）购买金额（MNAccount) \
+(3)退货表中有字段memberid（会员id，外键）退货金额（RMNAccount) \
 - 业务说明 
 (1)销售表中的销售记录可以是会员购买，也可以是非会员购买。（即销售表中的memberid可以为空）  
 (2)销售表中的一个会员可以有多条购买记录   
