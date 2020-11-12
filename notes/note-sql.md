@@ -308,24 +308,70 @@
 35.见下图
 ![Image text](https://raw.githubusercontent.com/hadoopcode/notes/master/img/img1.jpg) 
 
-36.已知条件如下：  
-t_user(uid int)  
-t_order(oid int,uid int,otime date,oamout int)  
-其中用户表和订单表一对多  
-计算在2017年1月下过单，2月份没有下过订单的用户，在3月份的订单金额分布  
-具体字段如下（注：没有匹配到3月份订单的用0填充）  
-uid，3月份订单金额超过10的订单书，3月份首次下单的金额，3月份最后一次下单的金额  
-要求：对订单表查询次数大于2次
+36.已知条件如下：  t_user(uid int) ，t_order(oid int,uid int,otime date,oamout int)  其中用户表和订单表一对多  
+
+- 计算在2017年1月下过单，2月份没有下过订单的用户，在3月份的订单金额分布 ，具体字段如下（注：没有匹配到3月份订单的用0填充）  
+
+  | uid  | 3月份订单金额超过10的订单书 | 3月份首次下单的金额 | 3月份最后一次下单的金额 |
+  | ---- | --------------------------- | ------------------- | ----------------------- |
+  |      |                             |                     |                         |
+
+  要求：对订单表查询次数大于2次
 
 37.已知有两个数据源，商品访问日志存于HDFS（200G/h）,商品详情存于Mysql  
-访问日志格式：2016-10-16 12：15：18\t/detail?itemId=123&userId=i12321  
-Mysql: item_detail(id,name,price,category_id) item_category(id,desc)  
-1)基于hive建立数据模型以满足以下需求，并简述处理过程（ETL,建表等）  
-2)计算每类商品的DAU  
-3)计算每小时访问TOP100商品  
+     访问日志格式：2016-10-16 12：15：18    /detail?itemId=123&userId=i12321  
+     Mysql：item_detail(id,name,price,category_id)        item_category(id,desc) 
 
-38.见图  
-![Image text](https://raw.githubusercontent.com/hadoopcode/notes/master/img/ali-sql.png)   
+- 基于hive建立数据模型以满足以下需求，并简述处理过程（ETL,建表等）  
+- 计算每类商品的DAU  
+- 计算每小时访问TOP100商品  
+
+38.假定你当前有两张交易订单表order和sub_oder，存储于hive环境，其表结构信息如下， 一 个订单id下可能多个子订单， 一 个子订单代表一个买家在一个卖家购买的一种商 品，可能购买多件，整个支付金额是在主订单上。
+
+```sql
+create table order (
+order_id             bigint       --订单 ID
+,sub_order_id        bigint       --子订单 ID
+,seller_id           bigint 	  --卖家 ID
+,buyer_id            bigint 	  --买家 ID
+,pay_time            string       --支付时间
+,pay_amt             double       --实际支付金额（元）
+,adjust_amt          double       --主订单优惠券金额（元）
+)
+create table sub_order (
+order_id             bigint       --订单 ID
+,sub_order_id        bigint       --子订单 ID
+,product_id          bigint       --商品 ID
+,price               double       --商品价格（元）
+,quantity            bigint       --购买商品数量
+)
+```
+
+现在需要你设计和开发一段数据处理逻辑SQL实现，将实际支付金额基于每个子订单的（商品价格*购买数量）占总的订单的（商品价格* 购买数量）比例进行拆分，获得每个子订单分摊实际支付金额，并输出表结构如下：
+
+```sql
+create table order (
+order_id               bigint    --订单ID
+,sub_order_id         bigint    --子订单ID
+,seller_id             bigint    --卖家 ID
+,buyer_id              bigint    --买家 ID
+,product_id            bigint    --商品 ID
+,pay_time              string    --支付时间
+,price                 double    --商品i介格（元）
+,quantity              bigint    --购买商品数量
+,sub_pay_amt           double    --子订单分摊实际支付金额
+)
+```
+
+请注意几个要求：
+
+- 拆分后金额精确到小数点两位；
+
+- 拆分后的汇总金额要与拆分前完全一致； 
+
+- 拆分的金额保持，每次程序重新运行计算的结果是一致的；
+
+- 如有业务理解有异议的，你可以进行一定假设，在代码注释中标明；
 
 39.以下表记录了用户每天的蚂蚁森林低碳生活领取的记录流水。  
 able_name：user_low_carbon  
