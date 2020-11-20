@@ -16,7 +16,7 @@
 
 ### 常用设置
 ```
-set hive.mapred.mode=nonstrict/strict
+set hive.exec.dynamic.partition.mode=nonstrict/strict
 set mapred.reduce.tasks=数
 
 # 推测执行，有多个reduce执行的时候，如果有一个一直没有结束，就会kill掉，重新启动一个reduce，缺点：重新启动的reduce并不能保证一定执行完。
