@@ -588,8 +588,131 @@ from 17order
 where dt='2018-09-01') t1
 where rk<=3
 
---近一个月（作拉链表）
 
+create table 17order2(
+	order_id string,
+    item_id string,
+    create_time string,
+    amount decimal
+)
+row format delimited fields terminated by '\t'
+stored as textfile
+
+-- 近一个月
+select item_id,sum(amount) as at
+from 17order2
+where create_time<='2018-09-01' and create_time> add_months('2018-09-1',-1)
+group by item_id
+order by at
+limit 10;
+
+create table 17item(
+	item_id string,
+    item_name string,
+    category string
+)
+row format delimited fields terminated by '\t'
+stored by textfile
+
+
+select t1.category,t1.item_id
+from(
+    select category,item_id, rank() over (partition by category order by at desc) as rk
+    from(
+        select i.category category ,o.item_id item_id,sum(amount) as at
+        from 17order2 as o join 17item as i on o.item_id=i.item_id
+        where o.create_time <='2018-09-01' and o.create_time>=add_months('2018-09-01',-1)
+        group i.category,o.item_id
+    ) as t1
+) as t2
+where rk<=10
+```
+
+18.
+
+```sql
+create 18version(
+	version_id string,
+)
+row format delimited fields terminated by '\t'
+stored as textfile
+
+insert into table 18version values 
+	('v9.9.2'),
+	('v8.1'),
+	('v9.92'),
+	('v9.9.2'),
+	('v31.0.1'),
+	('v31.0.1'),
+	('v8.2.1'),
+	('v9.99.1'),
+	('v9.1.99');
+
+
+select b.version_id
+from(
+ select a.version_id as version_id
+      ,row_number() over(order by a.main_version desc
+      ,a.sub_version desc, a.sec_version desc) as rn    
+ from(
+  select cast(substring(split(version_id,"\\.")[0],2) as int) as main_version
+        ,cast(split(version_id,"\\.")[1] as int) as sub_version
+        ,cast(split(version_id,"\\.")[2] as int)as sec_version
+        ,version_id
+  from version
+ ) a
+ 
+) b
+where rn = 1
+
+
+select a.version_id as version_id
+      ,rank() over(order by a.main_version desc
+      ,a.sub_version desc, a.sec_version desc) as rn    
+ from(
+  select cast(substring(split(version_id,"\\.")[0],2) as int) as main_version
+        ,cast(split(version_id,"\\.")[1] as int) as sub_version
+        ,cast(split(version_id,"\\.")[2] as int)as sec_version
+        ,version_id
+  from version
+ ) a
+```
+
+19
+
+```sql
+select
+id,
+company,
+salary
+from(select
+id,
+company,
+salary,
+cast(row_number() over(partition by company order by salary asc, id asc) as signed) as 'id1',
+cast(row_number() over(partition by company order by salary desc, id desc) as signed) as 'id2'
+from employee) as newtable
+where abs(id1-id2)=1 or
+id1=id2;
+```
+
+20.
+
+```sql
+cteate table 20oil(
+	A string comment '年月日时分秒',
+    B string comment '累计采油量'
+)
+row format delimited fields terminated by '\t'
+stored as textfile
+
+select B
+from 20oil
+order by A asc
+limit 4,0
+
+select avg(B)
+from 20oil
 
 ```
 
