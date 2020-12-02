@@ -681,19 +681,15 @@ select a.version_id as version_id
 19
 
 ```sql
-select
-id,
-company,
-salary
-from(select
-id,
-company,
-salary,
-cast(row_number() over(partition by company order by salary asc, id asc) as signed) as 'id1',
-cast(row_number() over(partition by company order by salary desc, id desc) as signed) as 'id2'
-from employee) as newtable
-where abs(id1-id2)=1 or
-id1=id2;
+with t1 as (
+    select score,
+       row_number() over (order by score desc ) as row_desc,
+       row_number() over (order by score asc ) as row_asc
+    from 10sc
+)
+select avg(score)
+from t1
+where abs(t1.row_asc-t1.row_desc)=1 or t1.row_desc=t1.row_asc;
 ```
 
 20.
