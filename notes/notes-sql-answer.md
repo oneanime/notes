@@ -712,3 +712,88 @@ from 20oil
 
 ```
 
+21.
+
+```sql
+drop table if exists T;
+create table T(
+	qq string,
+    age int
+)
+partitioned by (dt string)
+row format delimited fields terminated by '\t'
+stored as parquet;
+```
+
+22.
+
+```sql
+select qqa,qqb
+from 22qq
+where dt='20200221'
+distribute by dt sort by age desc
+limit N,0
+```
+
+23.
+
+```sql
+create table 23req(
+    req_id string,
+    event string,
+    `timestamp` string
+)
+row format delimited fields terminated by '\t'
+stored as textfile;
+
+
+insert into table 23req values
+    ('1','start','1606929191'),
+    ('1','end','1606929193'),
+    ('2','start','1606929195'),
+    ('2','end','1606929199');
+
+with t1 as (
+	select req_id,
+       min(if(event = 'start', `timestamp`, null)) as start_event,
+       min(if(event = 'end', `timestamp`, null)) as end_event
+    from 23req
+    group by req_id
+),
+t2 as(
+	select t1.req_id req_id,
+	       end_event-start_event as sub_timestrap,
+	       row_number() over (order by end_event-start_event desc ) as desc_time,
+	       row_number() over (order by end_event-start_event asc) as asc_time
+	from t1
+)
+select avg(sub_timestrap)
+from t2
+where abs(t2.desc_time-t2.asc_time)=1 or t2.asc_time=t2.desc_time
+```
+
+24.
+
+```sql
+with t1 as(
+select user_id,
+login_date,
+ROW_NUMBER() over(partition by user_id order by login_date) as rk
+from 24login
+),
+t2 as (
+	select user_id,sub_date(login_date,rk) as sub_date
+    from t1
+)
+select login_date
+from t2
+group by sub_date
+having count(1)=3
+```
+
+25.
+
+```sql
+
+```
+
