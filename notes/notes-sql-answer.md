@@ -797,3 +797,26 @@ having count(1)=3
 
 ```
 
+26.
+
+```sql
+
+```
+
+27.
+
+```sql
+select t1.area,t1.year,t1.temperature
+from
+(
+select area,year,temperature,dense_rank() over (partition by area order by temperature desc) as rk
+) t1
+where rk=1
+```
+
+28.
+
+```sql
+
+```
+
