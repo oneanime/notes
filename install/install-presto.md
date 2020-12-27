@@ -14,13 +14,16 @@
 5. vim node.properties
 ```
 node.environment=production
-node.id=ffffffff-ffff-ffff-ffff-ffffffffffff   #每个节点需要不同
+#每个节点需要不同
+node.id=ffffffff-ffff-ffff-ffff-ffffffffffff   
 node.data-dir=/opt/module/presto/data
 ```
 6. vim config.properties
 ```
-coordinator=true #集群的worker节点为false
-node-scheduler.include-coordinator=true   #单机版为true，集群版为false
+#集群的worker节点为false
+coordinator=true
+#单机版为true，集群版为false
+node-scheduler.include-coordinator=true
 http-server.http.port=8085
 query.max-memory=50GB
 query.max-memory-per-node=1GB

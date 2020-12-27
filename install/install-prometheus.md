@@ -1,0 +1,14 @@
+```
+https://prometheus.io/download/
+
+# 创建目录，存放Prometheus 拉取过来的数据，我们这里选择local storage
+
+mkdir -p /mnt/data/prometheus/
+
+# 启动Prometheus
+
+/opt/soft/prometheus/prom/prometheus --storage.tsdb.path="/data1/prometheus/data/" --log.level=debug --web.enable-lifecycle --web.enable-admin-api --config.file=/opt/soft/prometheus/prom/prometheus.yml
+
+# 至此Prometheus就可以正常工作了
+```
+
