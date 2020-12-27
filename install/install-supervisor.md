@@ -15,6 +15,7 @@ mv /etc/supervisord.conf /etc/supervisord.conf.bak
 
 ```
 sudo supervisord -c /etc/supervisord.conf    # 启动
+supervisorctl shutdown                       # 关闭
 sudo supervisorctl reread                    # 读取配置文件
 sudo supervisorctl update prometheus         # 更新启动Prometheus
 sudo supervisorctl status prometheus         # 查看启动状态
