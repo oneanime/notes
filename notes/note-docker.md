@@ -1,6 +1,8 @@
-一、docker常用命令
 
-帮助命令
+
+### 一、docker常用命令
+
+###### 1. 帮助命令
 
 ```
 docker version
@@ -8,7 +10,7 @@ docker info
 docker --help
 ```
 
-镜像命令
+###### 2. 镜像列表、搜素、拉取命、详情令
 
 ```
 docker images [options]
@@ -31,6 +33,22 @@ docker pull 镜像名[:tag]
 ```
 
 ```
+# 查看镜像详情
+docker image inspect 镜像id
+# 查看容器进程
+docker ps -a
+# 查看容器日志
+docker logs -f -t --tail 容器ID
+	-t 是加入时间戳
+	-f 跟随最新的日志打印
+	--tail 数字显示最后多少条
+# 查看容器内的进程
+docker top 容器ID
+```
+
+###### 3. 容器创建启动命令
+
+```
 # 创建不启动
 docker create -it 镜像名 command
 docker create -it centos /bin/bash
@@ -50,19 +68,7 @@ docker run [OPTIONS] IMAGE [COMMAND][ARG]
 		containerPort
 ```
 
-```
-# 查看镜像详情
-docker image inspect 镜像id
-# 查看容器进程
-docker ps -a
-# 查看容器日志
-docker logs -f -t --tail 容器ID
-	-t 是加入时间戳
-	-f 跟随最新的日志打印
-	--tail 数字显示最后多少条
-# 查看容器内的进程
-docker top 容器ID
-```
+###### 4. 删除镜像/容器
 
 ```
 # 删除单个镜像，强制删除：--force
@@ -75,6 +81,8 @@ docker rmi -f ${docker images -qa}
 docker rmi $(docker images -q)
 ```
 
+###### 5. 容器启动、停止、重启
+
 ```
 # 退出容器
 exit 容器停止退出
@@ -84,6 +92,8 @@ docker start/stop/restart 容器ID(前三个字符即可)或容器签名
 # 强制停止容器
 docker kill 容器ID或容器签名
 ```
+
+###### 6. 容器交互
 
 ```
 # 进入正在运行的容器并以命令行交互
@@ -96,7 +106,7 @@ docker exec -it 容器ID /bin/bash
 docker cp 容器ID:容器内路径 目的主机路径
 ```
 
-数据卷
+###### 7. 数据卷
 
 ```
 docker volume create 数据卷名 // 创建一个自定义容器卷
@@ -104,12 +114,14 @@ docker volume ls // 查看所有容器卷
 docker volume inspect edc-nginx-vol // 查看指定容器卷详情信息
 ```
 
+###### 8. 镜像打标签
+
 ```
 # 给镜像打tag
 docker tag daocloud.io/ubuntu daocloud.io/ubuntu:v1
 ```
 
-镜像制作
+###### 9. 镜像制作
 
 ```
 ### 容器制做 ####
@@ -131,14 +143,53 @@ docker load < nginx.tar
 	3. docker load不能对载入的镜像重命名，而docker import可以为镜像指定新名称
 ```
 
-### 通过Dockerfile创建镜像
+### 二 、通过Dockerfile创建镜像
 
 ```
 # 创建文件夹，在文件夹下创建Dockerfile，在Dockerfile所在路径先执行命令, . 表示Dockerfile所在路径
 docker build -t 新镜像名字:TAG .
 ```
 
-报错分析
+### 三、docker-compose
+
+```
+#### 以拉取gitlab为例 ####
+mkdir -p /opt/docker_gitlab
+cd /opt/docker_gitlab
+mdkir config
+mkdir data
+mkdir logs
+vim docker-compose.yml      # 文件名必须是docker-compose
+############# copy ############################
+version: '3.1'
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce'
+    container_name: 'gitlab'
+    restart: 'no'
+    privileged: true
+    hostname: 'gitlab'
+    environment:
+      TZ: 'Asia/Shanghai'
+      GITLAB_OMNIBUS_CONFIG:
+        external_url 'http://192.168.79.202'
+    ports:
+     - 8880:80
+     - 8443:443
+     - 8822:22
+    volumes:
+     - /opt/docker_gitlab/config:/etc/gitlab
+     - /opt/docker_gitlab/data:/var/opt/gitlab
+     - /opt/docker_gitlab/logs:/var/log/gitlab
+############################################
+docker-compose up -d    # 必须在docker-compose.yml所在路径下执行
+docker-compose logs -f  # 查看启动日志
+
+```
+
+
+
+### 四、报错分析
 
 >docker run -d centos后台启动后docker ps -a查看，**发现容器状态为exit**
 >
