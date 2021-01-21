@@ -27,6 +27,21 @@ sudo systemctl enable docker
 
 #配置阿里云源  https://help.aliyun.com/document_detail/60750.html
 登录阿里云账号根据步骤操作即可
+
+#配置远程连接
+vim /lib/systemd/system/docker.service
+找到ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+添加-H tcp://0.0.0.0:2375
+systemctl daemon-reload
+service docker restart
+```
+
+安装docker-compose
+
+```
+# https://github.com/docker/compose/tags
+# https://docs.docker.com/compose/install/
+# python2版本下载docker-compose1.24.1之前的版本
 ```
 
 window安装 [ 具体步骤见官网,以下为一些可选步骤 ]
