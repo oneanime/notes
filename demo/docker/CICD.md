@@ -58,7 +58,7 @@ docker exec -it gitlab-runner gitlab-runner register
 
 ```
 
-![https://github.com/oneanime/notes/blob/master/img/gitlab-runner-register.png]()
+![注册信息](https://github.com/oneanime/notes/blob/master/img/gitlab-runner-register.png)
 
 ```dockerfile
 # gitlab-runner Dockerfile
