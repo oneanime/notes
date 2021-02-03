@@ -139,4 +139,23 @@ services:
      - ./data:/var/jenkins_home
 ```
 
+```
+# 代码发布到gitlab---->jenkins拉取代码---->jenkins发布到目标服务器
+# 系统设置/系统配置/Publish over SSH(安装插件)，填写name、目标服务器 ip、密码、路径（没有需要手动创建）
+# Jenkins下配置免密码，登录gitlab
+# 进入Jenkins容器
+docker exec -it 容器id bash
+ssh-key -t rsa -C "邮箱"     # 会映射到宿主机中
+exit     # 退出容器
+cd /opt/docker_jenkins/data
+ll -a
+cd .ssh
+cat id_rsa.pub   #复制内容
+# 在gitlab中年找到用户设置/SSH密钥,粘贴上去
+```
+
+
+
+
+
 #### 4. 部署案例
