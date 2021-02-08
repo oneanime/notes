@@ -41,7 +41,9 @@
 >5. systemctl disable firewalld.service
 
 #### 脚本中杀进程
-> ps -ef | grep 进程名 | grep -v grep | awk '{print $2}' | xargs kill -9
+> ps -ef | grep 进程名 | grep -v grep | awk '{print $2}' | xargs kill 
+>
+> ps -ef|grep ${kibana_home} |grep -v grep|awk '{print $2}'|xargs kill
 
 #### linux物理断电，有时候会出现generating “/run/initramfs/rdsosreport.txt”.....这种错误
 >xfs_repair /dev/mapper/centos-root或xfs_repair /dev/mapper/centos-root -L  

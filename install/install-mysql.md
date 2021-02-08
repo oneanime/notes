@@ -164,6 +164,8 @@ binlog-do-db=gmallXXXXX
 >select Host,User,Grant_priv,Super_priv from user;  
 >UPDATE mysql.user SET Grant_priv='Y', Super_priv='Y' WHERE User='root';
 >FLUSH PRIVILEGES;
+>
+>一定要重启mysql
 
 >报错 mysqld: error while loading shared libraries: libaio.so.1: cannot open shared object file: No such file or directory  
 解决：yum install -y libaio-devel

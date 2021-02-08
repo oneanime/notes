@@ -9,3 +9,9 @@
 </property>
 ```
 >spark3.0.0中定义udaf函数要object类继承Aggregator，注册使用spark.udf.register("remark",functions.udaf(AreaClickUDAF))
+
+```
+# 测试圆周率
+bin/spark-submit  --class  org.apache.spark.examples.SparkPi  --deploy-mode cluster --master yarn examples/jars/spark-examples_2.12-3.0.1.jar
+```
+

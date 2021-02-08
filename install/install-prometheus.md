@@ -15,3 +15,14 @@ mkdir -p /mnt/data/prometheus/
 curl -XPOST http://host1:ip/-/reload
 ```
 
+安装Node Exporter
+
+```
+prometheu_home下的prometheu.yml
+
+scrape_configs:
+- job_name: node
+  static_configs:
+  - targets: ['localhost:9100']
+```
+
