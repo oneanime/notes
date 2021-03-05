@@ -1,4 +1,6 @@
 > 环境 centos7  
+>
+> oracle下载地址 http://yum.oracle.com/repo/OracleLinux/OL7/latest/x86_64/
 
 >yum localinstall -y oracle-database-preinstall-19c-1.0-1.el7.x86_64.rpm  
 yum localinstall -y oracle-database-ee-19c-1.0-1.x86_64.rpm  
