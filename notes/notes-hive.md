@@ -1,4 +1,6 @@
 ### 常用函数
+
+
 |  函数   | 用法  |
 |:------:|:------:|
 | RANK() | 排序相同时会重复，总数不会变 |
@@ -6,15 +8,40 @@
 | ROW_NUMBER()  | 会根据顺序计算 |
 | get_json_object(字段，"$.json中的字段")   | 提取json中的数据，只处理一条 |
 | lateral viewjson_tuple(字段，json中的字段1，json中的字段2.....)  | 处理多条数据  {{a:1,b:1}，{a:2,b:2}} |
+| datediff(string enddate, string startdate) | 返回结束日期减去开始日期的天数 |
 | date_add(日期,偏移的日期)  | 可以为负 |
+| date_sub(string startdate, int days) | 返回开始日期startdate减少days天后的日期 |
+| *add_months*(日期，偏移的月份) | 当前日期的下n或上n个月，求年的话相当于乘12 |
 |next_day(日期,'MO')   |取下周一 ，以此推算这周的|
 |date_format(日期,'yyyy-MM)|格式化日期|
+|to_date(string timestamp)|返回日期时间字段中的日期部分|
+|year(string date)、month(string date)、day(string date)、hour(string date)、minute(string date)、second(string date)|返回日期中的年、月、日、小时、分钟、秒（格式：2011-12-08 10:03:01）|
+|weekofyear(string date)|返回日期在当前的周数|
+|dayofyear(string date)|返回日期在所在年的第几天|
+|dayofmonth(string date)|返回日期在所在月的第几天|
+|from_unixtime(时间戳,'yyyyMMdd')|把时间戳转换为日期|
+|unix_timestamp(string date)|转换格式为“yyyy-MM-dd HH:mm:ss“的日期到UNIX时间戳。如果转化失败，则返回0。不加参数，返回当前时间的时间戳。|
 |LAG(col,n,DEFAULT) |向下移动|
 |LEAD(col,n,DEFAULT) |向上移动|
 |FIRST_VALUE()|取分组内排序后，截止到当前行，第一个值|
 |LAST_VALUE()|取分组内排序后，截止到当前行，最后一个值|
 
+
+
+```
+# 求近n个月
+add_month(日期，-n)
+# 求近n年
+add_month(日期，-n*12)
+# 求近
+
+#连续问题：rank（）over（），等差数列-等差数列
+```
+
+
+
 ### 常用设置
+
 ```
 set hive.exec.dynamic.partition.mode=nonstrict/strict
 set mapred.reduce.tasks=数
