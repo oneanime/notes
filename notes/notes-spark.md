@@ -15,3 +15,6 @@
 bin/spark-submit  --class  org.apache.spark.examples.SparkPi  --deploy-mode cluster --master yarn examples/jars/spark-examples_2.12-3.0.1.jar
 ```
 
+三种数据类型转换关系
+
+![](https://github.com/oneanime/notes/blob/master/img/spark三种数据类型转换.jpg)
