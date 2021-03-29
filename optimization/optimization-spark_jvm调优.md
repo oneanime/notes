@@ -52,7 +52,3 @@
    ```scala
    --conf spark.core.connection.ack.wait.timeout=300
    ```
-
-   
-
-4. 

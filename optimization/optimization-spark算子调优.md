@@ -36,7 +36,7 @@
 
 ​	在Spark任务中我们经常会使用filter算子完成RDD中数据的过滤，在任务初始阶段，从各个分区中加载到的数据量是相近的，但是一旦进过filter过滤后，每个分区的数据量有可能会存在较大差异。
 
-![](https://github.com/oneanime/notes/optimization/img/分区过滤结果.png)
+![](https://github.com/oneanime/notes/blob/master/optimization/img/分区过滤结果.png)
 
 ​	1)   每个partition的数据量变小了，如果还按照之前与partition相等的task个数去处理当前数据，有点浪费task的计算资源；
 
@@ -84,7 +84,7 @@ Spark SQL的并行度不允许用户自己指定，Spark SQL自己会默认根�
 
 ​		为了解决Spark SQL无法设置并行度和task数量的问题，我们可以使用repartition算子。
 
-![](https://github.com/oneanime/notes/optimization/img/repartition算子使用前后对比图.png)
+![](https://github.com/oneanime/notes/blob/master/optimization/img/repartition算子使用前后对比图.png)
 
 ​		Spark SQL这一步的并行度和task数量肯定是没有办法去改变了，但是，对于Spark SQL查询出来的RDD，立即使用repartition算子，去重新进行分区，这样可以重新分区为多个partition，从repartition之后的RDD操作，由于不再设计Spark SQL，因此stage的并行度就会等于你手动设置的值，这样就避免了Spark SQL所在的stage只能用少量的task去处理大量数据并执行复杂的算法逻辑。使用repartition算子的前后对比如图
 
@@ -92,7 +92,7 @@ Spark SQL的并行度不允许用户自己指定，Spark SQL自己会默认根�
 
 ​	reduceByKey相较于普通的shuffle操作一个显著的特点就是会进行map端的本地聚合，map端会先对本地的数据进行combine操作，然后将数据写入给下个stage的每个task创建的文件中，也就是在map端，对每一个key对应的value，执行reduceByKey算子函数。reduceByKey算子的执行过程如图
 
-![](https://github.com/oneanime/notes/optimization/img/reduceByKey算子执行过程图.png)
+![](https://github.com/oneanime/notes/blob/master/optimization/img/reduceByKey算子执行过程图.png)
 	1)  本地聚合后，在map端的数据量变少，减少了磁盘IO，也减少了对磁盘空间的占用
 
 ​	2)  本地聚合后，下一个stage拉取的数据量变少，减少了网络传输的数据量
@@ -103,8 +103,8 @@ Spark SQL的并行度不允许用户自己指定，Spark SQL自己会默认根�
 
 基于reduceByKey的本地聚合特征，我们应该考虑使用reduceByKey代替其他的shuffle算子，例如groupByKey。reduceByKey与groupByKey
 
-![](https://github.com/oneanime/notes/optimization/img/groupby原理.png)
+![](https://github.com/oneanime/notes/blob/master/optimization/img/groupby原理.png)
 
-![reduceBykey原理](https://github.com/oneanime/notes/optimization/img/reduceBykey原理.png)
+![reduceBykey原理](https://github.com/oneanime/notes/blob/master/optimization/img/reduceBykey原理.png)
 
 ​		根据上图可知，groupByKey不会进行map端的聚合，而是将所有map端的数据shuffle到reduce端，然后在reduce端进行数据的聚合操作。由于reduceByKey有map端聚合的特性，使得网络传输的数据量减小，因此效率要明显高于groupByKey。

@@ -16,7 +16,7 @@
 
    （1）key分布不均匀
 
-   ![](https://github.com/oneanime/notes/optimization/img/key分布不均匀示例图.png)
+   ![](https://github.com/oneanime/notes/blob/master/optimization/img/key分布不均匀示例图.png)
 
    (2) 建表时考虑不周
 
@@ -201,7 +201,7 @@
 
    ​		而增加了shuffle read task以后，每个task就分配到一个key，即每个task就处理10条数据，那么自然每个task的执行时间都会变短了
 
-   ![](https://github.com/oneanime/notes/optimization/img/shuffle优化提高并行度示例图.png)
+   ![](https://github.com/oneanime/notes/blob/master/optimization/img/shuffle优化提高并行度示例图.png)
 
    ​		优点：实现起来比较简单，可以有效缓解和减轻数据倾斜的影响。
 
@@ -270,7 +270,7 @@
 
    ​		将原本相同的key通过附加随机前缀的方式，变成多个不同的key，就可以让原本被一个task处理的数据分散到多个task上去做局部聚合，进而解决单个task处理数据量过多的问题。接着去除掉随机前缀，再次进行全局聚合，就可以得到最终的结果。具体原理见下图。
 
-   ![](https://github.com/oneanime/notes/optimization/img/shuffle优化两阶段聚合示意图.png)
+   ![](https://github.com/oneanime/notes/blob/master/optimization/img/shuffle优化两阶段聚合示意图.png)
 
    ​	优点
     		对于聚合类的shuffle操作导致的数据倾斜，效果是非常不错的。通常都可以解决掉数据倾斜，或者至少是大幅度缓解数据倾斜，将Spark作业的性能提升数倍以上。
@@ -326,7 +326,7 @@
 
    ​		但是如果一个RDD是比较小的，则可以采用广播小RDD全量数据+map算子来实现与join同样的效果，也就是map join，此时就不会发生shuffle操作，也就不会发生数据倾斜。具体原理如下图所示。
 
-   ![](https://github.com/oneanime/notes/optimization/img/reducejoin转化为mapjoin.png)
+   ![](https://github.com/oneanime/notes/blob/master/optimization/img/reducejoin转化为mapjoin.png)
 
    ​		优点：对join操作导致的数据倾斜，效果非常好，因为根本就不会发生shuffle，也就根本不会发生数据倾斜。
 
@@ -478,7 +478,7 @@
 
    ​		对于join导致的数据倾斜，如果只是某几个key导致了倾斜，可以将少数几个key分拆成独立RDD，并附加随机前缀打散成n份去进行join，此时这几个key对应的数据就不会集中在少数几个task上，而是分散到多个task进行join了。具体原理见下图。
 
-   ![](https://github.com/oneanime/notes/optimization/img/数据抽样.png)
+   ![](https://github.com/oneanime/notes/blob/master/optimization/img/数据抽样.png)
 
    ​		优点：对于join导致的数据倾斜，如果只是某几个key导致了倾斜，采用该方式可以用最有效的方式打散key进行join。而且只需要针对少数倾斜key对应的数据进行扩容n倍，不需要对全量数据进行扩容。避免了占用过多内存。
 
@@ -553,4 +553,4 @@
 
    ​		大家需要对这些方案的思路和原理都透彻理解之后，在实践中根据各种不同的情况，灵活运用多种方案，来解决自己的数据倾斜问题。
 
-   ​	![](https://github.com/oneanime/notes/optimization/img/spark数据倾斜小结.png)
+   ​	![](https://github.com/oneanime/notes/blob/master/optimization/img/spark数据倾斜小结.png)
