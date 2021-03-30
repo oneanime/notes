@@ -17,4 +17,10 @@ bin/spark-submit  --class  org.apache.spark.examples.SparkPi  --deploy-mode clus
 
 三种数据类型转换关系
 
+使用StructType时，row中字段的顺序要和StructType列表中的顺序相同
+
+rdd转row可以使用RowFactory或者直接.toDF()
+
+可以使用.toDF()修改列名
+
 ![](https://github.com/oneanime/notes/blob/master/img/spark三种数据类型转换.jpg)
