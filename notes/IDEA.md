@@ -46,6 +46,11 @@ Comment with Block Comment                                                     C
   -- 然后再把原来的文件替换掉
   ```
   
+  ```
+  # 连接spark hive时没有数据库表列表
+  # 添加连接参数 spark.sql.warehouse.dir          /user/hive/warehouse/
+  ```
+  
   
   
   
