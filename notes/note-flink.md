@@ -3,6 +3,7 @@
 ```
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export HADOOP_CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath`
+rest.bind-port: 8888 # flink-conf.yaml配置web界面端口
 ```
 
 2.设置检查点和重启策略
