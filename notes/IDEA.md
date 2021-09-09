@@ -49,6 +49,7 @@ Comment with Block Comment                                                     C
   ```
   # 连接spark hive时没有数据库表列表
   # 添加连接参数 spark.sql.warehouse.dir          /user/hive/warehouse/
+  勾选 introspect using JDBC metadata
   ```
   
   
