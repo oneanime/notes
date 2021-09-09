@@ -25,6 +25,19 @@
 |LEAD(col,n,DEFAULT) |向上移动|
 |FIRST_VALUE()|取分组内排序后，截止到当前行，第一个值|
 |LAST_VALUE()|取分组内排序后，截止到当前行，最后一个值|
+|TRUNC（date[,fmt]）|定元素而截去的日期值|
+
+```sql
+如果当日日期是：2011-3-18
+select trunc(sysdate) --2011-3-18 今天的日期为2011-3-18
+select trunc(sysdate, 'mm') --2011-3-1 返回当月第一天.
+select trunc(sysdate,'yy')  --2011-1-1 返回当年第一天
+select trunc(sysdate,'dd')  --2011-3-18 返回当前年月日
+select trunc(sysdate,'yyyy')  --2011-1-1 返回当年第一天
+select trunc(sysdate,'d')  --2011-3-13 (星期天)返回当前星期的第一天
+select trunc(sysdate, 'hh')  --2011-3-18 14:00:00 当前时间为14:41
+select trunc(sysdate, 'mi')  --2011-3-18 14:41:00 TRUNC()函数没有秒的精确
+```
 
 
 
