@@ -828,3 +828,15 @@ where rk=1
 -- 相减
 ```
 
+44.
+
+```sql
+select t1.id,min(t2.sales_follow_up)
+from
+(select id,sale_time,lead(sale_time,1,null) over(partition by id order by sale_time)as lead_sale_time
+from a
+where lead_sale_time is not null
+ ) t1 join b t2 on t1.id=t2.id and t2.sales_follow_up>t1.sale_time and t2.sales_follow_up<t1.lead_sale_time
+ group by t1.id
+```
+
