@@ -42,3 +42,5 @@ vim /etc/hosts
 
 > hostnamectl set-hostname [hostname]
 
+阿里云镜像https://developer.aliyun.com/mirror/centos?spm=a2c6h.13651102.0.0.3e221b11kt2Zye
+

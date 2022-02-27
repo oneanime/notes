@@ -51,6 +51,18 @@ add_month(日期，-n*12)
 #连续问题：rank（）over（），等差数列-等差数列
 ```
 
+```
+insert overwrite table a1 parttion(随便写字段，hdfs的目录上的分区名)
+select
+...，
+分区字段
+from b1；
+
+// 比如b1中有21个字段，在写insert的字段时，实际要写22个，最后一个字段默认是分区字段,实际在建a1表时，字段是21+1个
+```
+
+
+
 
 
 ### 常用设置
@@ -114,4 +126,5 @@ hive -hiveconf hive.root.logger=DEBUG,console
 >分区多个子目录，分桶存为多个文件（按hash打散）  
 >场景：抽样、join提高效率  
 >分桶之后，桶与桶join，减少join次数  
->合理分桶  
+>合理分桶    
+>distribute by 可以解决小文件问题，相当于shuffle中的分区字段，指定字段发送到reduce
