@@ -3,6 +3,8 @@
 ```
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 export HADOOP_CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath`
+可以在config.sh中添加export HADOOP_CLASSPATH=$(/mnt/module/hadoop/bin/hadoop classpath)
+
 rest.bind-port: 8888 # flink-conf.yaml配置web界面端口
 ```
 
