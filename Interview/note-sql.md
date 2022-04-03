@@ -1,35 +1,81 @@
 1. 找出所有科目成绩都大于某一学科平均成绩的学生(uid,subject_id,score)
 
    <details>   
-       <summary>答案</summary>
+       <summary>建表语句</summary>
+       <pre>
+           <code>
+   drop table sc;
+   create external table if not exists sc
+   (
+       uid        int,
+       subject_id int,
+       score      decimal
+   )
+   row format delimited fields terminated by '\t'
+       null defined as ''
+   stored as parquet ;
+   insert into table sc
+   values (01, 01, 80),
+          (01, 02, 90),
+          (01, 03, 99),
+          (02, 01, 70),
+          (02, 02, 60),
+          (02, 03, 80),
+          (03, 01, 80),
+          (03, 02, 80),
+          (03, 03, 80),
+          (04, 01, 50),
+          (04, 02, 30),
+          (04, 03, 20),
+          (05, 01, 76),
+          (05, 02, 87),
+          (06, 01, 31),
+          (06, 03, 34),
+          (07, 02, 89),
+          (07, 03, 98);
+           </code>
+       </pre> 
+   </details>
+
+   <details>   
+       <summary>答案1</summary>
        <pre>
        	<code>
-       	select uid
-           from sc left join
-           (
-                select subject_id ,avg(score) as avg_score
-                from sc
-                group by subject_id
-           ) t1 on sc.subject_id=t1.subject_id
-           where sc.score>t1.avg_score
-           group by uid
-           having count(uid)=3
-           
-   with t1 as (
-       select uid,subject_id,score,avg(score) over(partition by subject_id) as avg_score
-       from sc
-   ),
-   t2 as (
-       select uid,subject_id,score,if(t1.score>t1.avg_score,1,0) as flag
-       from t1
-   )
-   select uid
-   from t2
-   group by uid
-   having sum(t2.flag)=3
+       select uid
+       from sc left join
+       (
+           select subject_id ,avg(score) as avg_score
+           from sc
+           group by subject_id
+       ) t1 on sc.subject_id=t1.subject_id
+       where sc.score>t1.avg_score
+       group by uid
+       having count(uid)=3
+           </code>
+       </pre> 
+   </details>
+
+   <details>   
+       <summary>答案2</summary>
+       <pre>
+       	<code>
+       with t1 as (
+           select uid,subject_id,score,avg(score) over(partition by subject_id) as avg_score
+           from sc
+       ),
+       t2 as (
+           select uid,subject_id,score,if(t1.score>t1.avg_score,1,0) as flag
+           from t1
+       )
+       select uid
+       from t2
+       group by uid
+       having sum(t2.flag)=3
        	</code>
        </pre> 
    </details>
+
+   
 
 2. 统计出每个用户的累积访问次数
 
