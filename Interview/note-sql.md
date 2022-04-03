@@ -914,31 +914,277 @@ group by `date`
 |                  |                 |              |                        |                    |              |
 
 - 在Hive中创建这个表。
+
+  <details>   
+      <summary>建表语句</summary>
+      <pre>
+          <code>
+  create table 17order(
+  	order_id string,
+      user_id string,
+      amount decimal,
+      pay_datetime string,
+      channel_id string
+  )
+  partition by(dt string)
+  row format delimited fields terminated by '\t'
+  stored as textfile
+          </code>
+      </pre> 
+  </details>
+
 - 查询dt=‘2018-09-01‘里每个渠道的订单数，下单人数（去重），总金额。
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select count(order_id) as ct_order,
+  	   count(distinct user_id) as ct_user,
+  	   sum(amount) as total_amount
+  from 17order
+  where dt='2018-09-01'
+  group by channel_id;
+          </code>
+      </pre> 
+  </details>
+
 - 查询dt=‘2018-09-01‘里每个渠道的金额最大3笔订单。
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select order_id,user_id,amount,pay_datetime,channel_id
+  from
+  (select order_id,
+  	   user_id,
+  	   amount,
+  	   pay_datetime,
+  	   channel_id,
+  	   rank() over(partition by channel_id order by amount desc) as rk
+  from 17order
+  where dt='2018-09-01') t1
+  where rk<=3
+          </code>
+      </pre> 
+  </details>
+
 - 有一天发现订单数据重复，请分析原因
 
 | order_id | item_id | create_time | amount |
 | -------- | ------- | ----------- | ------ |
 | item_id | item_name | category ||
 | item_id | item_name | category_1 | category_2 |
+<details>   
+    <summary>建表语句</summary>
+    <pre>
+        <code>
+create table 17order2(
+	order_id string,
+    item_id string,
+    create_time string,
+    amount decimal
+)
+row format delimited fields terminated by '\t'
+stored as textfile;
+create table 17item(
+	item_id string,
+    item_name string,
+    category string
+)
+row format delimited fields terminated by '\t'
+stored by textfile;
+        </code>
+    </pre> 
+</details>
+
 - 最近一个月，销售数量最多的10个商品
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select item_id,sum(amount) as at
+  from 17order2
+  where create_time<='2018-09-01' and create_time> add_months('2018-09-1',-1)
+  group by item_id
+  order by at
+  limit 10;
+          </code>
+      </pre> 
+  </details>
+
 - 最近一个月，每个种类里销售数量最多的10个商品(一个订单对应一个商品 一个商品对应一个品类)
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select t1.category,t1.item_id
+  from(
+      select category,item_id, rank() over (partition by category order by at desc) as rk
+      from(
+          select i.category category ,o.item_id item_id,sum(amount) as at
+          from 17order2 as o join 17item as i on o.item_id=i.item_id
+          where o.create_time <='2018-09-01' and o.create_time>=add_months('2018-09-01',-1)
+          group i.category,o.item_id
+      ) as t1
+  ) as t2
+  where rk<=10
+          </code>
+      </pre> 
+  </details>
+
 - 计算平台的每一个用户发过多少日记、获得多少点赞数
 
 18.处理产品版本号，表[版本号，子版本号，阶段版本号]
 
+<details>   
+    <summary>建表语句</summary>
+    <pre>
+        <code>
+create 18version(
+	version_id string,
+)
+row format delimited fields terminated by '\t'
+stored as textfile;
+insert into table 18version values 
+	('v9.9.2'),
+	('v8.1'),
+	('v9.92'),
+	('v9.9.2'),
+	('v31.0.1'),
+	('v31.0.1'),
+	('v8.2.1'),
+	('v9.99.1'),
+	('v9.1.99');
+        </code>
+    </pre> 
+</details>
+
 - 需求A:找出T1表中最大的版本号
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select b.version_id
+  from(
+   select a.version_id as version_id
+        ,row_number() over(order by a.main_version desc
+        ,a.sub_version desc, a.sec_version desc) as rn    
+   from(
+    select cast(substring(split(version_id,"\\.")[0],2) as int) as main_version
+          ,cast(split(version_id,"\\.")[1] as int) as sub_version
+          ,cast(split(version_id,"\\.")[2] as int)as sec_version
+          ,version_id
+    from version
+   ) a
+  ) b
+  where rn = 1
+          </code>
+      </pre> 
+  </details>
+
 - 需求B：计算出如下格式的所有版本号排序，要求对于相同的版本号，顺序号并列
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select a.version_id as version_id
+        ,rank() over(order by a.main_version desc
+        ,a.sub_version desc, a.sec_version desc) as rn    
+   from(
+    select cast(substring(split(version_id,"\\.")[0],2) as int) as main_version
+          ,cast(split(version_id,"\\.")[1] as int) as sub_version
+          ,cast(split(version_id,"\\.")[2] as int)as sec_version
+          ,version_id
+    from version
+   ) a
+          </code>
+      </pre> 
+  </details>
 
 19.求中位数  
 
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+with t1 as (
+    select score,
+       row_number() over (order by score desc ) as row_desc,
+       row_number() over (order by score asc ) as row_asc
+    from 10sc
+)
+select avg(score)
+from t1
+where abs(t1.row_asc-t1.row_desc)=1 or t1.row_desc=t1.row_asc;
+        </code>
+    </pre> 
+</details>
+
 20.有张“钻井平台采油量表”，有两个字段，A年月日时分秒，B累计采油量。  
 
+<details>   
+    <summary>建表语句</summary>
+    <pre>
+        <code>
+cteate table 20oil(
+	A string comment '年月日时分秒',
+    B string comment '累计采油量'
+)
+row format delimited fields terminated by '\t'
+stored as textfile;
+        </code>
+    </pre> 
+</details>
+
 - 求第四次下钻的采油量  
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select B
+  from 20oil
+  order by A asc
+  limit 4,0
+          </code>
+      </pre> 
+  </details>
+
 - 求平均每次采油量  
 
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select avg(B)
+  from 20oil
+          </code>
+      </pre> 
+  </details>
+
 21.有一个分区表，表名T，字段qq，age，按天分区，让写出创建表的语句  
+
+<details>   
+    <summary>建表语句</summary>
+    <pre>
+        <code>
+drop table if exists T;
+create table T(
+	qq string,
+    age int
+)
+partitioned by (dt string)
+row format delimited fields terminated by '\t'
+stored as parquet;
+        </code>
+    </pre> 
+</details>
 
 22.分区表，求20200221这个分区中，年龄第N大的qq号列表，找出所有互相关注的qq对   
 
@@ -949,6 +1195,19 @@ group by `date`
 |34|56|
 |34|12|
 
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+select qqa,qqb
+from 22qq
+where dt='20200221'
+distribute by dt sort by age desc
+limit N,0
+        </code>
+    </pre> 
+</details>
+
 23.计算开始时间和结束时间的差值的中位数，多种方法：
 
 |req_id|event|timestamp|
@@ -956,11 +1215,78 @@ group by `date`
 |1|start|1400xxxxx|
 |1|end  |1400xxxxx|
 
+<details>   
+    <summary>建表语句</summary>
+    <pre>
+        <code>
+create table 23req(
+    req_id string,
+    event string,
+    `timestamp` string
+)
+row format delimited fields terminated by '\t'
+stored as textfile;
+insert into table 23req values
+    ('1','start','1606929191'),
+    ('1','end','1606929193'),
+    ('2','start','1606929195'),
+    ('2','end','1606929199');
+        </code>
+    </pre> 
+</details>
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+with t1 as (
+	select req_id,
+       min(if(event = 'start', `timestamp`, null)) as start_event,
+       min(if(event = 'end', `timestamp`, null)) as end_event
+    from 23req
+    group by req_id
+),
+t2 as(
+	select t1.req_id req_id,
+	       end_event-start_event as sub_timestrap,
+	       row_number() over (order by end_event-start_event desc ) as desc_time,
+	       row_number() over (order by end_event-start_event asc) as asc_time
+	from t1
+)
+select avg(sub_timestrap)
+from t2
+where abs(t2.desc_time-t2.asc_time)=1 or t2.asc_time=t2.desc_time
+        </code>
+    </pre> 
+</details>
+
 24. 查询出用户连续三天登录的用户
 
 |user_id|login_date|
 |-------|----------|
 |   1   |20200325  |
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+with t1 as(
+select user_id,
+    login_date,
+    ROW_NUMBER() over(partition by user_id order by login_date) as rk
+from 24login
+),
+t2 as (
+	select user_id,sub_date(login_date,rk) as sub_date
+    from t1
+)
+select login_date
+from t2
+group by sub_date
+having count(1)=3;
+        </code>
+    </pre> 
+</details>
 
 25. 求每天新增用户次日、7天、30天留存率。（说明：7天留存是指当天有登录且第7天还登录的用户）
 
@@ -980,6 +1306,20 @@ group by `date`
 | send.time（发消息时间）           | login_time（登录时间）        |
 
 27.字段（area、year、temperature），统计每个地区的温度最高的对应的年份。
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+select t1.area,t1.year,t1.temperature
+from
+(
+select area,year,temperature,dense_rank() over (partition by area order by temperature desc) as rk
+) t1
+where rk=1;
+        </code>
+    </pre> 
+</details>
 
 28.如下表  
 
@@ -1200,6 +1540,17 @@ plant_carbon  [plant_id (植物编号)，plant_name (植物名)，low_carbon (�
 
     其中1为快充，0为慢充，求每辆车最长 连续快充次数 
 
+    <details>   
+        <summary>答案1</summary>
+        <pre>
+            <code>
+    -- 开窗按ID分组，时间排序
+    -- 开窗按充电类型分组，时间排序
+    -- 相减
+            </code>
+        </pre> 
+    </details>
+
 44. a表销售id+销售时间，b表销售id+销售跟进时间，取出销售id的对应销售时间的最近的销售跟进时间
 
     | a表销售id | 销售时间 |
@@ -1215,7 +1566,25 @@ plant_carbon  [plant_id (植物编号)，plant_name (植物名)，low_carbon (�
 
     
 
-
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+select t1.id,min(t2.sales_follow_up)
+from
+(
+	select id,
+		   sale_time,
+		   lead(sale_time,1,null) over(partition by id order by sale_time) as 		lead_sale_time
+	from a
+	where lead_sale_time is not null
+ ) t1 join b t2 on t1.id=t2.id and 
+   t2.sales_follow_up>t1.sale_time and 
+   t2.sales_follow_up<t1.lead_sale_time
+ group by t1.id
+        </code>
+    </pre> 
+</details>
 
 
 
