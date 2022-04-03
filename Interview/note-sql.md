@@ -14,6 +14,19 @@
            where sc.score>t1.avg_score
            group by uid
            having count(uid)=3
+           
+   with t1 as (
+       select uid,subject_id,score,avg(score) over(partition by subject_id) as avg_score
+       from sc
+   ),
+   t2 as (
+       select uid,subject_id,score,if(t1.score>t1.avg_score,1,0) as flag
+       from t1
+   )
+   select uid
+   from t2
+   group by uid
+   having sum(t2.flag)=3
        	</code>
        </pre> 
    </details>
