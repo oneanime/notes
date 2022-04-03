@@ -96,10 +96,129 @@
 | u03    | 2017-01 | 8    | 8    |
 | u04    | 2017-01 | 3    | 3    |
 
+<details>   
+    <summary>建表语句</summary>
+    <pre>
+        <code>
+create table if not exists user_visit
+(
+    userId        string,
+    visitDate  string,
+    visitCount int
+)
+    row format delimited fields terminated by '\t'
+        null defined as ''
+    stored as textfile;
+insert into table user_visit
+values ('u01', '2017/1/21', 5),
+       ('u02', '2017/1/23', 6),
+       ('u03', '2017/1/22', 7),
+       ('u04', '2017/1/20', 3),
+       ('u01', '2017/1/23', 6),
+       ('u01', '2017/2/21', 8),
+       ('u02', '2017/1/23', 6),
+       ('u01', '2017/2/22', 4);
+        </code>
+    </pre> 
+</details>
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+with t1 as (
+    select userId, 
+            visitDate, 
+            visitCount, 
+            date_format(regexp_replace(visitDate, '/', '-'), 'yyyy-MM') as fm_date
+    from user_visit
+),
+t2 as (
+    select userId,fm_date,sum(visitCount) as vc
+    from t1
+    group by userId,fm_date
+)
+select userId,vc,sum(vc) over (partition by userId order by fm_date) as acc
+from t2
+        </code>
+    </pre> 
+</details>
+
 3.有50W个京东店铺，每个顾客访客访问任何一个店铺的任何一个商品时都会产生一条访问日志，访问日志存储的表名为Visit，访客的用户id为user_id，被访问的店铺名称为shop，请统计： 
 
+<details>   
+    <summary>建表</summary>
+    <pre>
+        <code>
+create table 3jindongshop
+(
+    userId string,
+    shop   string
+)
+    row format delimited fields terminated by '\t'
+    stored as textfile;
+insert into table 3jindongshop
+values ('u1', 'a'),
+       ('u2', 'b'),
+       ('u1', 'b'),
+       ('u1', 'a'),
+       ('u3', 'c'),
+       ('u4', 'b'),
+       ('u1', 'a'),
+       ('u2', 'c'),
+       ('u5', 'b'),
+       ('u4', 'b'),
+       ('u6', 'c'),
+       ('u2', 'c'),
+       ('u1', 'b'),
+       ('u2', 'a'),
+       ('u2', 'a'),
+       ('u3', 'a'),
+       ('u5', 'a'),
+       ('u5', 'a'),
+       ('u5', 'a');
+        </code>
+    </pre> 
+</details>
+
 - 每个店铺的UV（访客数） 
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select shop,count(userId)
+  from (
+           select userId, shop
+           from 3jindongshop
+           group by userId, shop
+       )
+  group by shop;
+          </code>
+      </pre> 
+  </details>
+
 - 每个店铺访问次数top3的访客信息。输出店铺名称、访客id、访问次数
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  with t1 as (
+      select userId,shop,count(1) as visitCount
+      from 3jindongshop
+      group by userId,shop
+  ),
+  t2 as (
+      select userId,shop,visitCount,rank() over (partition by shop order by visitCount desc ) as rk
+      from t1
+  )
+  select shop,userId,visitCount
+  from t2
+  where rk<=3
+          </code>
+      </pre> 
+  </details>
 
 |userId| shop|
 |------|-----|
@@ -130,8 +249,58 @@
 |----------|--------|-------   |------|
 |2017-01-01|10029028|1000003251|33.57 |
 
+<details>   
+    <summary>建表语句</summary>
+    <pre>
+        <code>
+create table 4ORDER
+(
+    user_id string,
+    order_id string,
+    amount decimal
+)
+partitioned by (dt string)
+row format delimited fields terminated by '\t'
+stored as textfile;
+set hive.exec.dynamic.partition.mode=nonstrict;
+insert into table 4ORDER values
+('1000003251','10029028',33.57,'2017-01-01')
+        </code>
+    </pre> 
+</details>
+
 - 给出2017年每个月的订单数、用户数、总成交金额。
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  with t1 as (
+      select date_format(dt, 'yyyy-MM') as mn, user_id ,count(order_id) as count_orders,sum(amount) as total_amount
+      from 4ORDER
+      where date_format(dt, 'yyyy') = '2017'
+      group by date_format(dt, 'yyyy-MM'),user_id
+  )
+  select mn,count(user_id) as count_visit, sum(count_orders) as ct_order,sum(total_amount) as t_am
+  from t1
+  group by mn
+          </code>
+      </pre> 
+  </details>
+
 - 给出2017年11月的新客数(指在11月才有第一笔订单)
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+  select count(user_id)
+  from 4ORDER
+  group by user_id
+  having date_format(min(dt),'yyyy-MM')='2017-11'
+          </code>
+      </pre> 
+  </details>
 
 5.有日志如下，请写出代码求得所有用户和活跃用户的总数及平均年龄。（活跃用户指连续两天都有访问记录的用户）日期 用户 年龄
 
@@ -148,7 +317,97 @@
 |2019-02-15|test_2|19|
 |2019-02-16|test_2|19|
 
+<details>   
+    <summary>建表语句</summary>
+    <pre>
+        <code>
+create table if not exists 5user
+(
+    user_id string,
+    age int
+)
+partitioned by (dt string)
+row format delimited fields terminated by '\t'
+stored as textfile;
+insert into table 5user values
+('test_1',23,'2019-02-11'),
+('test_2',19,'2019-02-11'),
+('test_3',39,'2019-02-11'),
+('test_1',23,'2019-02-11'),
+('test_3',39,'2019-02-11'),
+('test_1',23,'2019-02-11'),
+('test_2',19,'2019-02-12'),
+('test_1',23,'2019-02-13'),
+('test_2',19,'2019-02-15'),
+('test_2',19,'2019-02-16');
+        </code>
+    </pre> 
+</details>
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+with t1 as (
+--去重后给每组的排序
+    select user_id, min(age) as age, dt,dense_rank() over (partition by user_id order by dt) as rk
+    from 5user
+    group by user_id, dt
+),
+t2 as (
+--日期和排序做差，等差数列减等差数列，结果会相同，求和大于2为连续两天
+    select user_id, min(age) as age, date_sub(dt, rk)
+    from t1
+    group by user_id, date_sub(dt, rk)
+    having count(1) > 2
+),
+t3 as (
+--(user_id,age)去重-->user_id
+    select user_id,min(age) as age
+    from t2
+    group by user_id
+),
+t4 as (
+    select 0                                              user_total_count,
+           0                                              user_total_avg_age,
+           count(1)                                    as twice_count,
+           cast(sum(age) / count(1) as decimal(10, 2)) as twice_count_avg_age
+    from t3
+),
+t5 as (
+    select user_id,min(age) as age
+    from 5user
+    group by user_id
+),
+t6 as (
+    select count(1)                                    as user_total_count,
+           cast(sum(age) / count(1) as decimal(10, 2)) as user_total_avg_age,
+           0                                           as twice_count,
+           0                                           as twice_count_avg_age
+    from t5
+)
+select sum(user_total_count) as user_total_count,
+       sum(user_total_avg_age) as user_total_avg_age,
+       sum(twice_count) as twice_count,
+       sum(twice_count_avg_age) as twice_count_avg_age
+from (
+    select *from t4
+    union all
+    select * from t6
+);
+        </code>
+    </pre> 
+</details>
+
 6.字段[user_id，money，payment_time(购买时间），order_id]，求所有用户中在今年10月份第一次购买商品的金额。
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
 
 7.求11月9号下午14点（14-15点）,访问api/user/login接口的top10的ip地址
 
@@ -171,19 +430,44 @@
 | 2016-11-09 14:59:40 | /api/user/login  | 200.6.5.166 |
 | 2016-11-09 14:59:40 | /api/user/login  | 200.6.5.166 |
 
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
+
 8.有一个账号表[dist_id(区组id)，account(账号)，gold(金币)]，查询各自区组的money排名前十的账号（分组取前10）
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
 
 9.分组查出销售表中所有会员购买金额，同时分组查出退货表中所有会员的退货金额，把会员id相同的购买金额-退款金额    	得到的结果更新到表会员表中对应会员的积分字段（credits）
 
 - 有三张表分别为会员表（member）销售表（sale）退货表（regoods)   
-(1)会员表有字段memberid（会员id，主键）credits（积分)   
-(2)销售表有字段memberid（会员id，外键）购买金额（MNAccount)   
-(3)退货表中有字段memberid（会员id，外键）退货金额（RMNAccount) 
+  (1)会员表有字段memberid（会员id，主键）credits（积分)   
+  (2)销售表有字段memberid（会员id，外键）购买金额（MNAccount)   
+  (3)退货表中有字段memberid（会员id，外键）退货金额（RMNAccount) 
+
 - 业务说明   
-(1)销售表中的销售记录可以是会员购买，也可以是非会员购买。（即销售表中的memberid可以为空）  
-(2)销售表中的一个会员可以有多条购买记录   
-(3)退货表中的退货记录可以是会员，也可是非会员   
-(4)一个会员可以有一条或多条退货记录  
+  (1)销售表中的销售记录可以是会员购买，也可以是非会员购买。（即销售表中的memberid可以为空）  
+  (2)销售表中的一个会员可以有多条购买记录   
+  (3)退货表中的退货记录可以是会员，也可是非会员   
+  (4)一个会员可以有一条或多条退货记录  
+
+  <details>   
+      <summary>答案1</summary>
+      <pre>
+          <code>
+          </code>
+      </pre> 
+  </details>
 
 10.用一条SQL语句查询出每门课都大于80分的学生姓名
 
@@ -197,6 +481,14 @@
 |王五 |数学      | 100|
 |王五 |英语      | 90|
 
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
+
 11.删除除了自动编号不同, 其他都相同的学生冗余信息
 
 |auto_id|stu_id|name|class_id|class_name|score|
@@ -205,7 +497,24 @@
 |2     |2005002| 李四|   0001|   数学|   89|
 |3     |2005001| 张三|   0001|   数学|   69|
 
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
+
 12.一个叫team的表，里面只有一个字段name,一共有4条纪录，分别是a,b,c,d,对应四个球队，现在四个球队进行比赛，用	一条sql语句显示所有可能的比赛组合  
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
+
 13.表1变表2
 
 |year|month|amount|
@@ -223,6 +532,14 @@
 |----|---|---|---|---|
 |1991|1.1|1.2|1.3|1.4|
 |1992|2.1|2.2|2.3|2.4|
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
 
 14.表3变表4(及格分数为60)
 
@@ -242,6 +559,14 @@
 |4        |jsp        |30   |fail|
 |5        |servlet    |80   |pass|
 
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
+
 15.给出所有购入商品为两种或两种以上的购物人记录
 
 |购物人|商品名称|数量|
@@ -251,6 +576,14 @@
 |C    |丙    |   1|
 |A    |丁    |   2|
 |B    |丙    |   5|
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
 
 16.表5变表6
 
@@ -268,6 +601,14 @@
 |----------|-----|----|
 |2005-05-09|  2  | 2  |
 |2005-05-10|  1  | 2  |
+
+<details>   
+    <summary>答案1</summary>
+    <pre>
+        <code>
+        </code>
+    </pre> 
+</details>
 
 17.有一个订单表order。
 
