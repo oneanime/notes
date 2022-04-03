@@ -1,23 +1,4 @@
 1. 找出所有科目成绩都大于某一学科平均成绩的学生(uid,subject_id,score)
-
-   <details>   
-       <summary>答案</summary>
-       <pre>
-       	<code>
-       	select uid
-           from sc left join
-           (
-                select subject_id ,avg(score) as avg_score
-                from sc
-                group by subject_id
-           ) t1 on sc.subject_id=t1.subject_id
-           where sc.score>t1.avg_score
-           group by uid
-           having count(uid)=3
-       	</code>
-       </pre> 
-   </details>
-
 2. 统计出每个用户的累积访问次数
 
 | userId | visitDate | visitCount |
