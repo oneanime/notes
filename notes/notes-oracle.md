@@ -1,8 +1,9 @@
 ### 启动数据库
 ```
-1. sqlplus  /nolog  #管理员登录
-2. startup/shutdown
-3. lsnrctl start /lsnrctl stop（不用在sqlplus）
+1. lsnrctl start /lsnrctl stop（不用在sqlplus）    #首先以oracle用户登录系统，启动监听
+2. sqlplus  /nolog  #管理员登录，以system用户登录oracle
+3. conn as sysdba
+4. startup/shutdown     #启动/关闭数据库实例
 ```
 > sqlplus hp/123456sql@192.168.79.202:1521/hp  
 &emsp;&emsp;oracle数据库的概念和mysql中不同，只有一个大数据库，里面可以有多个实例，每个实例里面有多个用户（相当于mysql中的数据库概念），和多个tablenamespace（存储数据，磁盘上的文件），每个用户都有一个对应的表空间，不同用户可以用同一个表空间
