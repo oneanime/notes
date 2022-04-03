@@ -41,16 +41,16 @@
        <summary>答案1</summary>
        <pre>
        	<code>
-       select uid
-       from sc left join
-       (
-           select subject_id ,avg(score) as avg_score
-           from sc
-           group by subject_id
-       ) t1 on sc.subject_id=t1.subject_id
-       where sc.score>t1.avg_score
-       group by uid
-       having count(uid)=3
+   select uid
+   from sc left join
+   (
+       select subject_id ,avg(score) as avg_score
+       from sc
+       group by subject_id
+   ) t1 on sc.subject_id=t1.subject_id
+   where sc.score>t1.avg_score
+   group by uid
+   having count(uid)=3
            </code>
        </pre> 
    </details>
@@ -59,23 +59,21 @@
        <summary>答案2</summary>
        <pre>
        	<code>
-       with t1 as (
-           select uid,subject_id,score,avg(score) over(partition by subject_id) as avg_score
-           from sc
-       ),
-       t2 as (
-           select uid,subject_id,score,if(t1.score>t1.avg_score,1,0) as flag
-           from t1
-       )
-       select uid
-       from t2
-       group by uid
-       having sum(t2.flag)=3
+   with t1 as (
+       select uid,subject_id,score,avg(score) over(partition by subject_id) as avg_score
+       from sc
+   ),
+   t2 as (
+       select uid,subject_id,score,if(t1.score>t1.avg_score,1,0) as flag
+       from t1
+   )
+   select uid
+   from t2
+   group by uid
+   having sum(t2.flag)=3
        	</code>
        </pre> 
    </details>
-
-   
 
 2. 统计出每个用户的累积访问次数
 
