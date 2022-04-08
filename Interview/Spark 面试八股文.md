@@ -1,6 +1,5 @@
 <details>   
     <summary>1. Spark 的运行流程？</summary>
-<img src="https://github.com/oneanime/notes/tree/master/Interview/image/spark运行图.png">
 <pre>
 1. SparkContext 向资源管理器注册并向资源管理器申请运行Executor
 2. 资源管理器分配 Executor，然后资源管理器启动Executor
@@ -237,4 +236,168 @@ spark 与 hadoop 最大的区别在于迭代式计算模型。基于mapreduce �
 <pre>
 但是 spark 也有劣势，由于 spark 基于内存进行计算，虽然开发容易，但是真正面对大数据的时候，在没有进行调优的情况下，可能会出现各种各样的问题，比如 OOM 内存溢出等情况，导致 spark 程序可能无法运行起来，而mapreduce虽然运行缓慢，但是至少可以慢慢运行完。        
 </pre>
+</details>
+
+<details>   
+    <summary>22. Hadoop 和 Spark 使用场景？</summary>
+<pre>
+Hadoop/MapReduce 和 Spark 最适合的都是做离线型的数据分析，但Hadoop特别适合是单次分析的数据量“很大”的情景，而 Spark 则适用于数据量不是很大的情景。
+1. 一般情况下，对于中小互联网和企业级的大数据应用而言，单次分析的数量都不会“很大”，因此可以优先考虑使用 Spark。
+2. 业务通常认为 Spark 更适用于机器学习之类的“迭代式”应用，80GB的压缩数据（解压后超过 200GB），10 个节点的集群规模，跑类似“sum+group-by”的应用，MapReduce 花了 5 分钟，而spark 只需要2分钟        
+</pre> 
+</details>
+
+<details>   
+    <summary>23. Spark 如何保证宕机迅速恢复?</summary>
+<pre>
+1. 适当增加 spark standby master
+2. 编写 shell 脚本，定期检测 master 状态，出现宕机后对master 进行重启操作        
+</pre> 
+</details>
+
+<details>   
+    <summary>24. RDD 持久化原理？</summary>
+<pre>
+spark 非常重要的一个功能特性就是可以将 RDD 持久化在内存中。调用 cache()和 persist()方法即可。
+cache()和 persist()的区别在于，cache()是 persist()的一种简化方式，cache()的底层就是调用persist()的无参版本persist(MEMORY_ONLY)，将数据持久化到内存中。
+如果需要从内存中清除缓存，可以使用 unpersist()方法。RDD 持久化是可以手动选择不同的策略的。在调用 persist()时传入对应的StorageLevel 即可。        
+</pre> 
+</details>
+
+<details>   
+    <summary>25. Checkpoint 检查点机制？</summary>
+<pre>
+应用场景：当 spark 应用程序特别复杂，从初始的 RDD 开始到最后整个应用程序完成有很多的步骤，而且整个应用运行时间特别长，这种情况下就比较适合使用 checkpoint 功能。
+原因：对于特别复杂的 Spark 应用，会出现某个反复使用的RDD，即使之前持久化过但由于节点的故障导致数据丢失了，没有容错机制，所以需要重新计算一次数据。    
+Checkpoint 首先会调用 SparkContext 的 setCheckPointDIR()方法，设置一个容错的文件系统的目录，比如说 HDFS；然后对 RDD 调用checkpoint()方法。之后在 RDD 所处的 job 运行结束之后，会启动一个单独的job，来将checkpoint 过的 RDD 数据写入之前设置的文件系统，进行高可用、容错的类持久化操作。
+检查点机制是我们在 spark streaming 中用来保障容错性的主要机制，它可以使 spark streaming 阶段性的把应用数据存储到诸如HDFS 等可靠存储系统中，以供恢复时使用。具体来说基于以下两个目的服务：
+1. 控制发生失败时需要重算的状态数。Spark streaming 可以通过转化图的谱系图来重算状态，检查点机制则可以控制需要在转化图中回溯多远。
+2. 提供驱动器程序容错。如果流计算应用中的驱动器程序崩溃了，你可以重启驱动器程序并让驱动器程序从检查点恢复，这样spark streaming就可以读取之前运行的程序处理数据的进度，并从那里继续。
+</pre> 
+</details>
+
+<details>   
+    <summary>26. Checkpoint 和持久化机制的区别？</summary>
+<pre>
+最主要的区别在于持久化只是将数据保存在 BlockManager 中，但是RDD 的lineage(血缘关系，依赖关系)是不变的。但是 checkpoint 执行完之后，rdd已经没有之前所谓的依赖 rdd 了，而只有一个强行为其设置的checkpointRDD，checkpoint 之后 rdd 的 lineage 就改变了。
+持久化的数据丢失的可能性更大，因为节点的故障会导致磁盘、内存的数据丢失。但是 checkpoint 的数据通常是保存在高可用的文件系统中，比如HDFS 中，所以数据丢失可能性比较低        
+</pre> 
+</details>
+
+<details>   
+    <summary>27. Spark Streaming 以及基本工作原理？</summary>
+<pre>
+Spark streaming 是 spark core API 的一种扩展，可以用于进行大规模、高吞吐量、容错的实时数据流的处理。
+它支持从多种数据源读取数据，比如 Kafka、Flume、Twitter 和TCP Socket，并且能够使用算子比如 map、reduce、join 和 window 等来处理数据，处理后的数据可以保存到文件系统、数据库等存储中。
+Spark streaming 内部的基本工作原理是：接受实时输入数据流，然后将数据拆分成 batch，比如每收集一秒的数据封装成一个 batch，然后将每个batch交给 spark 的计算引擎进行处理，最后会生产处一个结果数据流，其中的数据也是一个一个的 batch 组成的。        
+</pre> 
+</details>
+
+<details>   
+    <summary>28. DStream 以及基本工作原理？</summary>
+<pre>
+DStream 是 spark streaming 提供的一种高级抽象，代表了一个持续不断的数据流。
+DStream 可以通过输入数据源来创建，比如 Kafka、flume 等，也可以通过其他DStream 的高阶函数来创建，比如 map、reduce、join 和window 等。DStream 内部其实不断产生 RDD，每个 RDD 包含了一个时间段的数据。Spark streaming 一定是有一个输入的 DStream 接收数据，按照时间划分成一个一个的 batch，并转化为一个 RDD，RDD 的数据是分散在各个子节点的partition 中。        
+</pre> 
+</details>
+
+<details>   
+    <summary>29. Spark Streaming 整合 Kafka 的两种模式？</summary>
+<pre>
+1. receiver 方式：将数据拉取到 executor 中做操作，若数据量大，内存存储不下，可以通过 WAL，设置了本地存储，保证数据不丢失，然后使用Kafka 高级 API 通过 zk 来维护偏移量，保证消费数据。receiver 消费的数据偏移量是在 zk 获取的，此方式效率低，容易出现数据丢失。
+- receiver 方式的容错性：在默认的配置下，这种方式可能会因为底层的失败而丢失数据。如果要启用高可靠机制，让数据零丢失，就必须启用Spark Streaming 的预写日志机制（Write Ahead Log，WAL）。该机制会同步地将接收到的 Kafka 数据写入分布式文件系统（比如HDFS）上的预写日志中。所以，即使底层节点出现了失败，也可以使用预写日志中的数据进行恢复。
+- Kafka 中的 topic 的 partition，与 Spark 中的RDD 的partition是没有关系的。在 1、KafkaUtils.createStream()中，提高partition的数量，只会增加 Receiver 方式中读取 partition 的线程的数量。不会增加 Spark 处理数据的并行度。 可以创建多个Kafka 输入DStream，使用不同的 consumer group 和 topic，来通过多个receiver 并行接收数据。
+2. 基于 Direct 方式：使用 Kafka 底层 Api，其消费者直接连接kafka 的分区上，因为 createDirectStream 创建的 DirectKafkaInputDStream每个 batch 所对应的 RDD 的分区与 kafka 分区一一对应，但是需要自己维护偏移量，即用即取，不会给内存造成太大的压力，效率高。
+- 优点：简化并行读取：如果要读取多个 partition，不需要创建多个输入DStream 然后对它们进行 union 操作。Spark 会创建跟Kafka
+partition 一样多的 RDD partition，并且会并行从Kafka 中读取数据。所以在 Kafka partition 和 RDD partition 之间，有一个一对一的映射关系。
+- 高性能：如果要保证零数据丢失，在基于 receiver 的方式中，需要开启WAL 机制。这种方式其实效率低下，因为数据实际上被复制了两份，Kafka自己本身就有高可靠的机制，会对数据复制一份，而这里又会复制一份到WAL 中。而基于 direct 的方式，不依赖 Receiver，不需要开启WAL机制，只要 Kafka 中作了数据的复制，那么就可以通过Kafka 的副本进行恢复。
+3. receiver 与和 direct 的比较：
+- 基于 receiver 的方式，是使用 Kafka 的高阶API 来在ZooKeeper中保存消费过的 offset 的。这是消费 Kafka 数据的传统方式。这种方式配合着 WAL 机制可以保证数据零丢失的高可靠性，但是却无法保证数据被处理一次且仅一次，可能会处理两次。因为 Spark 和ZooKeeper 之间可能是不同步的。
+- 基于 direct 的方式，使用 Kafka 的低阶 API，Spark Streaming 自己就负责追踪消费的 offset，并保存在 checkpoint 中。Spark 自己一定是同步的，因此可以保证数据是消费一次且仅消费一次。
+- Receiver 方式是通过 zookeeper 来连接 kafka 队列，Direct 方式是直接连接到 kafka 的节点上获取数据。
+</pre> 
+</details>
+
+<details>   
+    <summary>30. Spark 主备切换机制原理知道吗？</summary>
+<pre>
+Master 实际上可以配置两个，Spark 原生的 standalone 模式是支持Master主备切换的。当 Active Master 节点挂掉以后，我们可以将Standby Master切换为 Active Master。
+Spark Master 主备切换可以基于两种机制，一种是基于文件系统的，一种是基于 ZooKeeper 的。
+基于文件系统的主备切换机制，需要在 Active Master 挂掉之后手动切换到Standby Master 上；
+而基于 Zookeeper 的主备切换机制，可以实现自动切换Master。    
+</pre> 
+</details>
+
+<details>   
+    <summary>31. Spark 解决了 Hadoop 的哪些问题？</summary>
+<pre>
+1. MR：抽象层次低，需要使用手工代码来完成程序编写，使用上难以上手；Spark：Spark 采用 RDD 计算模型，简单容易上手。
+2. MR：只提供 map 和 reduce 两个操作，表达能力欠缺；Spark：Spark 采用更加丰富的算子模型，包括 map、flatmap、groupbykey、reducebykey 等；
+3. MR：一个 job 只能包含 map 和 reduce 两个阶段，复杂的任务需要包含很多个 job，这些 job 之间的管理以来需要开发者自己进行管理；Spark：Spark 中一个 job 可以包含多个转换操作，在调度时可以生成多个 stage，而且如果多个 map 操作的分区不变，是可以放在同一个task里面去执行；
+4. MR：中间结果存放在 hdfs 中；
+   Spark：Spark 的中间结果一般存在内存中，只有当内存不够了，才会存入本地磁盘，而不是 hdfs；
+5. MR：只有等到所有的 map task 执行完毕后才能执行reduce task；    
+   Spark：Spark 中分区相同的转换构成流水线在一个task 中执行，分区不同的需要进行 shuffle 操作，被划分成不同的stage 需要等待前面的stage 执行完才能执行。
+6. MR：只适合 batch 批处理，时延高，对于交互式处理和实时处理支持不够；
+   Spark：Spark streaming 可以将流拆成时间间隔的batch 进行处理，实时计算。
+</pre> 
+</details>
+
+<details>   
+    <summary>32. 数据倾斜的产生和解决办法？</summary>
+<pre>
+数据倾斜以为着某一个或者某几个 partition 的数据特别大，导致这几个partition 上的计算需要耗费相当长的时间。
+在 spark 中同一个应用程序划分成多个 stage，这些stage 之间是串行执行的，而一个 stage 里面的多个 task 是可以并行执行，task 数目由partition数目决定，如果一个 partition 的数目特别大，那么导致这个task 执行时间很长，导致接下来的 stage 无法执行，从而导致整个 job 执行变慢。避免数据倾斜，一般是要选用合适的 key，或者自己定义相关的partitioner，通过加盐或者哈希值来拆分这些 key，从而将这些数据分散到不同的partition去执行。
+如下算子会导致 shuffle 操作，是导致数据倾斜可能发生的关键点所在：groupByKey；reduceByKey；aggregaByKey；join；cogroup；        
+</pre> 
+</details>
+
+<details>   
+    <summary>33. 你用 Spark Sql 处理的时候， 处理过程中用的DataFrame还是直接写的 Sql？为什么？</summary>
+<pre>
+这个问题的宗旨是问你 spark sql 中 dataframe 和 sql 的区别，从执行原理、操作方便程度和自定义程度来分析 这个问题。        
+</pre> 
+</details>
+
+<details>   
+    <summary>34. Spark Master HA 主从切换过程不会影响到集群已有作业的运行，为什么？</summary>
+<pre>
+不会的。
+因为程序在运行之前，已经申请过资源了，driver 和Executors 通讯，不需要和 master 进行通讯的。        
+</pre> 
+</details>
+
+<details>   
+    <summary>35. Spark Master 使用 Zookeeper 进行 HA，有哪些源数据保存到Zookeeper 里面？</summary>
+<pre>
+spark 通过这个参数 spark.deploy.zookeeper.dir 指定master 元数据在zookeeper 中保存的位置，包括 Worker，Driver 和 Application 以及Executors。standby 节点要从 zk 中，获得元数据信息，恢复集群运行状态，才能对外继续提供服务，作业提交资源申请等，在恢复前是不能接受请求的。注：Master 切换需要注意 2 点：
+1、在 Master 切换的过程中，所有的已经在运行的程序皆正常运行！因为SparkApplication 在运行前就已经通过 Cluster Manager 获得了计算资源，所以在运行时 Job 本身的 调度和处理和 Master 是没有任何关系。
+2、在 Master 的切换过程中唯一的影响是不能提交新的 Job：一方面不能够提交新的应用程序给集群， 因为只有 Active Master 才能接受新的程序的提交请求；另外一方面，已经运行的程序中也不能够因 Action 操作触发新的Job 的提交请求。        
+</pre> 
+</details>
+
+<details>   
+    <summary>36. 如何实现 Spark Streaming 读取 Flume 中的数据？</summary>
+<pre>
+- 前期经过技术调研，查看官网相关资料，发现 sparkStreaming 整合flume有 2 种模式，一种是拉模式，一种是推模式，然后在简单的聊聊这2 种模式的特点，以及如何部署实现，需要做哪些事情，最后对比两种模式的特点，选择那种模式更好。
+- 推模式：Flume 将数据 Push 推给 Spark Streaming
+- 拉模式：Spark Streaming 从 flume 中 Poll 拉取数据        
+</pre> 
+</details>
+
+<details>   
+    <summary>37. 在实际开发的时候是如何保证数据不丢失的？</summary>
+<pre>
+- flume 那边采用的 channel 是将数据落地到磁盘中，保证数据源端安全性（可以在补充一下，flume 在这里的 channel 可以设置为memory 内存中，提高数据接收处理的效率，但是由于数据在内存中，安全机制保证不了，故选择 channel 为磁盘存储。整个流程运行有一点的延迟性）   
+- sparkStreaming 通过拉模式整合的时候，使用了FlumeUtils 这样一个类，该类是需要依赖一个额外的 jar 包（spark-streaming-flume_2.10）
+- 要想保证数据不丢失，数据的准确性，可以在构建StreamingConext 的时候，利用 StreamingContext.getOrCreate（checkpoint, creatingFunc:() => StreamingContext）来创建一个 StreamingContext,使用StreamingContext.getOrCreate 来创建 StreamingContext 对象，传入的第一个参数是 checkpoint 的存放目录，第二参数是生成StreamingContext 对象的用户自定义函数。如果checkpoint 的存放目录存在，则从这个目录中生成 StreamingContext 对象；如果不存在，才会调用第二个函数来生成新的 StreamingContext 对象。在creatingFunc函数中，除了生成一个新的 StreamingContext 操作，还需要完成各种操作，然后调用 ssc.checkpoint(checkpointDirectory)来初始化checkpoint 功能，最后再返回 StreamingContext 对象。这样，在 StreamingContext.getOrCreate 之后，就可以直接调用start()函数来启动（或者是从中断点继续运行）流式应用了。如果有其他在启动或继续运行都要做的工作，可以在 start()调用前执行。
+</pre> 
+</details>
+
+<details>   
+    <summary>38. RDD 有哪些缺陷？</summary>
+<pre>
+1. 不支持细粒度的写和更新操作，Spark 写数据是粗粒度的，所谓粗粒度，就是批量写入数据，目的是为了提高效率。但是Spark 读数据是细粒度的，也就是说可以一条条的读。
+2. 不支持增量迭代计算，如果对 Flink 熟悉，可以说下Flink 支持增量迭代计算。        
+</pre> 
 </details>
