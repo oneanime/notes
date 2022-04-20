@@ -144,7 +144,7 @@ from t2
     </pre> 
 </details>
 
-3.有50W个京东店铺，每个顾客访客访问任何一个店铺的任何一个商品时都会产生一条访问日志，访问日志存储的表名为Visit，访客的用户id为user_id，被访问的店铺名称为shop，请统计： 
+3.有50W个京东店铺，每个顾客访客访问任何一个店铺的任何一个商品时都会产生一条访问日志，访问日志存储的表名为Visit，访客的用户id为user_id，被访问的店铺名称为shop，请统计：
 
 <details>   
     <summary>建表</summary>
@@ -181,7 +181,7 @@ values ('u1', 'a'),
     </pre> 
 </details>
 
-- 每个店铺的UV（访客数） 
+- 每个店铺的UV（访客数）
 
   <details>   
       <summary>答案1</summary>
@@ -241,7 +241,6 @@ values ('u1', 'a'),
 |u5    |a    |
 |u5    |a    |
 |u5    |a    |
-
 
 4.已知一个表STG.ORDER，有如下字段:Date，Order_id，User_id，amount。
 
@@ -574,18 +573,18 @@ where rk<=10;
     </pre> 
 </details>
 
-9.分组查出销售表中所有会员购买金额，同时分组查出退货表中所有会员的退货金额，把会员id相同的购买金额-退款金额    	得到的结果更新到表会员表中对应会员的积分字段（credits）
+9.分组查出销售表中所有会员购买金额，同时分组查出退货表中所有会员的退货金额，把会员id相同的购买金额-退款金额 得到的结果更新到表会员表中对应会员的积分字段（credits）
 
 - 有三张表分别为会员表（member）销售表（sale）退货表（regoods)   
   (1)会员表有字段memberid（会员id，主键）credits（积分)   
   (2)销售表有字段memberid（会员id，外键）购买金额（MNAccount)   
-  (3)退货表中有字段memberid（会员id，外键）退货金额（RMNAccount) 
+  (3)退货表中有字段memberid（会员id，外键）退货金额（RMNAccount)
 
 - 业务说明   
   (1)销售表中的销售记录可以是会员购买，也可以是非会员购买。（即销售表中的memberid可以为空）  
   (2)销售表中的一个会员可以有多条购买记录   
   (3)退货表中的退货记录可以是会员，也可是非会员   
-  (4)一个会员可以有一条或多条退货记录  
+  (4)一个会员可以有一条或多条退货记录
 
   <details>   
       <summary>答案1</summary>
@@ -697,7 +696,7 @@ delete from 11sc where auto_id not in (
     </pre> 
 </details>
 
-12.一个叫team的表，里面只有一个字段name,一共有4条纪录，分别是a,b,c,d,对应四个球队，现在四个球队进行比赛，用	一条sql语句显示所有可能的比赛组合  
+12.一个叫team的表，里面只有一个字段name,一共有4条纪录，分别是a,b,c,d,对应四个球队，现在四个球队进行比赛，用 一条sql语句显示所有可能的比赛组合
 
 <details>   
     <summary>答案1</summary>
@@ -976,6 +975,7 @@ group by `date`
 | -------- | ------- | ----------- | ------ |
 | item_id | item_name | category ||
 | item_id | item_name | category_1 | category_2 |
+
 <details>   
     <summary>建表语句</summary>
     <pre>
@@ -1107,7 +1107,7 @@ insert into table 18version values
       </pre> 
   </details>
 
-19.求中位数  
+19.求中位数
 
 <details>   
     <summary>答案1</summary>
@@ -1126,7 +1126,7 @@ where abs(t1.row_asc-t1.row_desc)=1 or t1.row_desc=t1.row_asc;
     </pre> 
 </details>
 
-20.有张“钻井平台采油量表”，有两个字段，A年月日时分秒，B累计采油量。  
+20.有张“钻井平台采油量表”，有两个字段，A年月日时分秒，B累计采油量。
 
 <details>   
     <summary>建表语句</summary>
@@ -1142,7 +1142,7 @@ stored as textfile;
     </pre> 
 </details>
 
-- 求第四次下钻的采油量  
+- 求第四次下钻的采油量
 
   <details>   
       <summary>答案1</summary>
@@ -1156,7 +1156,7 @@ stored as textfile;
       </pre> 
   </details>
 
-- 求平均每次采油量  
+- 求平均每次采油量
 
   <details>   
       <summary>答案1</summary>
@@ -1168,7 +1168,7 @@ stored as textfile;
       </pre> 
   </details>
 
-21.有一个分区表，表名T，字段qq，age，按天分区，让写出创建表的语句  
+21.有一个分区表，表名T，字段qq，age，按天分区，让写出创建表的语句
 
 <details>   
     <summary>建表语句</summary>
@@ -1186,7 +1186,7 @@ stored as parquet;
     </pre> 
 </details>
 
-22.分区表，求20200221这个分区中，年龄第N大的qq号列表，找出所有互相关注的qq对   
+22.分区表，求20200221这个分区中，年龄第N大的qq号列表，找出所有互相关注的qq对
 
 |qqa|qqb|
 |---|---|
@@ -1321,7 +1321,7 @@ where rk=1;
     </pre> 
 </details>
 
-28.如下表  
+28.如下表
 
 | 字段名       | 中文名         | 字段类型 | 字段示例   |
 | ------------ | -------------- | -------- | ---------- |
@@ -1339,25 +1339,25 @@ where rk=1;
 
 - 写出用户表 tb_cuid_1d的 20200401 的次日、次7日留存的具体HQL ：
 
-  一条sql统计出以下指标 （4.1号uv，4.1号在4.2号的留存uv，4.1号在4.8号的留存uv）(一条sql写完)  
+  一条sql统计出以下指标 （4.1号uv，4.1号在4.2号的留存uv，4.1号在4.8号的留存uv）(一条sql写完)
 
-- 统计当天不同平台、版本下的uv、pv  
+- 统计当天不同平台、版本下的uv、pv
 
-- 解析ext中所有的"type"( lateral view explode)  
+- 解析ext中所有的"type"( lateral view explode)
 
-29.表t_a (uid,os,day) 和表t_b(uid,os,day)  
+29.表t_a (uid,os,day) 和表t_b(uid,os,day)
 
-- 15号在t_a 但是不在t_b的用户  
-- t_a中最近30内，所有用户末次活跃日期  
-- t_a中最近30内，所有用户末次活跃日期和倒数第二次的差值  
+- 15号在t_a 但是不在t_b的用户
+- t_a中最近30内，所有用户末次活跃日期
+- t_a中最近30内，所有用户末次活跃日期和倒数第二次的差值
 
-31.把每科最高分前三名统计出来 --成绩表Score（student_name,student_no,subject_no,score）  
+31.把每科最高分前三名统计出来 --成绩表Score（student_name,student_no,subject_no,score）
 
-32.找出单科成绩高于该科平均成绩的同学名单（无论该学生有多少科，只要有一科满足即可） --成绩表Score（student_name,student_no,subject_no,score）  
+32.找出单科成绩高于该科平均成绩的同学名单（无论该学生有多少科，只要有一科满足即可） --成绩表Score（student_name,student_no,subject_no,score）
 
-33.一个表 test(name,price),构建一个新表,将name相同的,price所有价格合并到一个字段里面  
+33.一个表 test(name,price),构建一个新表,将name相同的,price所有价格合并到一个字段里面
 
-34.如何将题33中price合并后的prices 字段再拆分为多条记录？  
+34.如何将题33中price合并后的prices 字段再拆分为多条记录？
 
 35.使用HiveSQL,根据shop_id分组，按照money排序，得到r，d，a三列顺序
 
@@ -1371,58 +1371,79 @@ where rk=1;
 | B       | x     | 1     | 3    | 3    | 2    |
 | B       | n     | 0     | 4    | 4    | 3    |
 
-36.已知条件如下：  t_user(uid int) ，t_order(oid int,uid int,otime date,oamout int)  其中用户表和订单表一对多  
+36.已知条件如下： t_user(uid int) ，t_order(oid int,uid int,otime date,oamout int)  其中用户表和订单表一对多
 
-- 计算在2017年1月下过单，2月份没有下过订单的用户，在3月份的订单金额分布 ，具体字段如下（注：没有匹配到3月份订单的用0填充）  
+- 计算在2017年1月下过单，2月份没有下过订单的用户，在3月份的订单金额分布 ，具体字段如下（注：没有匹配到3月份订单的用0填充）
 
   | uid  | 3月份订单金额超过10的订单书 | 3月份首次下单的金额 | 3月份最后一次下单的金额 |
-  | ---- | --------------------------- | ------------------- | ----------------------- |
+    | ---- | --------------------------- | ------------------- | ----------------------- |
   |      |                             |                     |                         |
 
   要求：对订单表查询次数大于2次
 
 37.已知有两个数据源，商品访问日志存于HDFS（200G/h）,商品详情存于Mysql  
-     访问日志格式：2016-10-16 12：15：18    /detail?itemId=123&userId=i12321  
-     Mysql：item_detail(id,name,price,category_id)        item_category(id,desc) 
+访问日志格式：2016-10-16 12：15：18 /detail?itemId=123&userId=i12321  
+Mysql：item_detail(id,name,price,category_id)        item_category(id,desc)
 
-- 基于hive建立数据模型以满足以下需求，并简述处理过程（ETL,建表等）  
-- 计算每类商品的DAU  
-- 计算每小时访问TOP100商品  
+- 基于hive建立数据模型以满足以下需求，并简述处理过程（ETL,建表等）
+- 计算每类商品的DAU
+- 计算每小时访问TOP100商品
 
 38.假定你当前有两张交易订单表order和sub_oder，存储于hive环境，其表结构信息如下， 一 个订单id下可能多个子订单， 一 个子订单代表一个买家在一个卖家购买的一种商 品，可能购买多件，整个支付金额是在主订单上。
 
 ```sql
-create table order (
-order_id             bigint       --订单 ID
-,sub_order_id        bigint       --子订单 ID
-,seller_id           bigint 	  --卖家 ID
-,buyer_id            bigint 	  --买家 ID
-,pay_time            string       --支付时间
-,pay_amt             double       --实际支付金额（元）
-,adjust_amt          double       --主订单优惠券金额（元）
+create table order
+(
+    order_id     bigint --订单 ID
+    ,
+    sub_order_id bigint --子订单 ID
+    ,
+    seller_id    bigint --卖家 ID
+    ,
+    buyer_id     bigint --买家 ID
+    ,
+    pay_time     string --支付时间
+    ,
+    pay_amt      double --实际支付金额（元）
+    ,
+    adjust_amt   double --主订单优惠券金额（元）
 )
-create table sub_order (
-order_id             bigint       --订单 ID
-,sub_order_id        bigint       --子订单 ID
-,product_id          bigint       --商品 ID
-,price               double       --商品价格（元）
-,quantity            bigint       --购买商品数量
+create table sub_order
+(
+    order_id     bigint --订单 ID
+    ,
+    sub_order_id bigint --子订单 ID
+    ,
+    product_id   bigint --商品 ID
+    ,
+    price        double --商品价格（元）
+    ,
+    quantity     bigint --购买商品数量
 )
 ```
 
 现在需要你设计和开发一段数据处理逻辑SQL实现，将实际支付金额基于每个子订单的（商品价格*购买数量）占总的订单的（商品价格* 购买数量）比例进行拆分，获得每个子订单分摊实际支付金额，并输出表结构如下：
 
 ```sql
-create table order (
-order_id               bigint    --订单ID
-,sub_order_id         bigint    --子订单ID
-,seller_id             bigint    --卖家 ID
-,buyer_id              bigint    --买家 ID
-,product_id            bigint    --商品 ID
-,pay_time              string    --支付时间
-,price                 double    --商品i介格（元）
-,quantity              bigint    --购买商品数量
-,sub_pay_amt           double    --子订单分摊实际支付金额
+create table order
+(
+    order_id     bigint --订单ID
+    ,
+    sub_order_id bigint --子订单ID
+    ,
+    seller_id    bigint --卖家 ID
+    ,
+    buyer_id     bigint --买家 ID
+    ,
+    product_id   bigint --商品 ID
+    ,
+    pay_time     string --支付时间
+    ,
+    price        double --商品i介格（元）
+    ,
+    quantity     bigint --购买商品数量
+    ,
+    sub_pay_amt  double --子订单分摊实际支付金额
 )
 ```
 
@@ -1430,34 +1451,32 @@ order_id               bigint    --订单ID
 
 - 拆分后金额精确到小数点两位；
 
-- 拆分后的汇总金额要与拆分前完全一致； 
+- 拆分后的汇总金额要与拆分前完全一致；
 
 - 拆分的金额保持，每次程序重新运行计算的结果是一致的；
 
 - 如有业务理解有异议的，你可以进行一定假设，在代码注释中标明；
 
-  
+39.以下表记录了用户每天的蚂蚁森林低碳生活领取的记录流水蚂蚁森林植物换购表，用于记录申领环保植物所需要减少 的碳排放量
 
-39.以下表记录了用户每天的蚂蚁森林低碳生活领取的记录流水蚂蚁森林植物换购表，用于记录申领环保植物所需要减少  的碳排放量  
-
-user_low_carbon [user_id(用户id)，data_dt (日期)，low_carbon(减少碳排放（g)]。  
+user_low_carbon [user_id(用户id)，data_dt (日期)，low_carbon(减少碳排放（g)]。
 
 plant_carbon  [plant_id (植物编号)，plant_name (植物名)，low_carbon (换购植物所需要的碳 )]
 
 - 假设2017年1月1日开始记录低碳数据（user_low_carbon），假设2017年10月1日之前满足申领条件的用户都申领了一颗p004-胡杨，剩余的能量全部用来领取“p002-沙柳”。  
-  统计在10月1日累计申领“p002-沙柳” 排名前10的用户信息；以及他比后一名多领了几颗沙柳。得到的统计结果如下表样式：  
+  统计在10月1日累计申领“p002-沙柳” 排名前10的用户信息；以及他比后一名多领了几颗沙柳。得到的统计结果如下表样式：
 
   | user_id | plant_count | less_count(比后一名多领了几颗沙柳) |
-  | ------- | ----------- | ---------------------------------- |
+    | ------- | ----------- | ---------------------------------- |
   | u_101   | 1000        | 100                                |
   | u_088   | 900         | 400                                |
   | u_103   | 500         | …                                  |
 
 - 查询user_low_carbon表中每日流水记录，条件为：  
-    1)用户在2017年，连续三天（或以上）的天数里，  
-    2)每天减少碳排放（low_carbon）都超过100g的用户低碳流水。  
-    3)需要查询返回满足以上条件的user_low_carbon表中的记录流水。  
-    例如用户u_002符合条件的记录如下，因为2017/1/2~2017/1/5连续四天的碳排放量之和都大于等于100g   
+  1)用户在2017年，连续三天（或以上）的天数里，  
+  2)每天减少碳排放（low_carbon）都超过100g的用户低碳流水。  
+  3)需要查询返回满足以上条件的user_low_carbon表中的记录流水。  
+  例如用户u_002符合条件的记录如下，因为2017/1/2~2017/1/5连续四天的碳排放量之和都大于等于100g
 
 测试数据：
 
@@ -1514,31 +1533,31 @@ plant_carbon  [plant_id (植物编号)，plant_name (植物名)，low_carbon (�
 
 43. 小鹏汽车充电有两种类型，快充、慢充，有如下数据：
 
-    车辆ID  充电时间                  充电类型 
+    车辆ID 充电时间 充电类型
 
-    a         20200601 19:21:09    1
+    a 20200601 19:21:09 1
 
-    a         20200611 11:30:09    1
+    a 20200611 11:30:09 1
 
-    a         20200621 21:10:09   0
+    a 20200621 21:10:09 0
 
-    a         20200701 19:01:09   1
+    a 20200701 19:01:09 1
 
-    a         20200701 20:30:09   1
+    a 20200701 20:30:09 1
 
-    a         20200701 21:00:09   0
+    a 20200701 21:00:09 0
 
-    a         20200702 20:30:00  1
+    a 20200702 20:30:00 1
 
-    a        20200703 09:01:09   1
+    a 20200703 09:01:09 1
 
-    a        20200704 12:05:09   1
+    a 20200704 12:05:09 1
 
-    b        20200706 12:20:09   0
+    b 20200706 12:20:09 0
 
-    a        20200706 11:10:09   0
+    a 20200706 11:10:09 0
 
-    其中1为快充，0为慢充，求每辆车最长 连续快充次数 
+    其中1为快充，0为慢充，求每辆车最长 连续快充次数
 
     <details>   
         <summary>答案1</summary>
@@ -1553,18 +1572,16 @@ plant_carbon  [plant_id (植物编号)，plant_name (植物名)，low_carbon (�
 
 44. a表销售id+销售时间，b表销售id+销售跟进时间，取出销售id的对应销售时间的最近的销售跟进时间
 
-    | a表销售id | 销售时间 |
-    | --------- | -------- |
-    | id1       | 10:00    |
-    | id1       | 12:00    |
+| a表销售id | 销售时间  |
+|--------|-------|
+| id1    | 10:00 |
+| id1    | 12:00 |
 
-    | b表销售id | 销售跟进时间 |
-    | --------- | ------------ |
-    | id1       | 11:00        |
-    | id1       | 11:30        |
-    | id1       | 12:30        |
-
-    
+| b表销售id | 销售跟进时间 |
+|--------|--------|
+| id1    | 11:00  |
+| id1    | 11:30  |
+| id1    | 12:30  |
 
 <details>   
     <summary>答案1</summary>
@@ -1586,11 +1603,94 @@ from
     </pre> 
 </details>
 
+45. 微众银行面试题
+    需求1 授信金额统计  
+    需求2 贷款产品不良统计  
+    需求3 逾期率统计  
+    需求4 用户画像统计  
+    需求5 Vintage账龄分析
+
+核额流水表
+
+| 字段名           | 字段含义                         | 字段类型          |
+|---------------|------------------------------|---------------|
+| ds            | 日期分区，样式格式为20200101，每个分区有全量流水 | string        |
+| sno           | 每个ds内的主键，流水号                 | string        |
+| uid           | 用户id                         | string        |
+| is_risk_apply | 是否核额申请（核额漏斗第一步）取值0或1         | bigint        |
+| is_pass_rule  | 是否通过规则（核额漏斗第二步）取值0或1         | bigint        |
+| is_obtain     | 是否授信成功（核额漏斗第二步）取值0或1         | bigint        |
+| quota         | 授信金额                         | decimal(30,6) |
+| update_time   | 更新时间，格式为2020-11-14 08:12:12  | string        |
+
+借据表
+
+| 字段名          | 字段含义                          | 字段类型          |
+|--------------|-------------------------------|---------------|
+| ds           | 日期分区，样例格式为20200101每个分区有全量借据号  | string        |
+| duebill_id   | 借据号(每个日期分区内的主键)               | string        |
+| uid          | 用户id                          | string        |
+| prod_type    | 产品名称 仅3个枚举值 xx贷 yy贷 zz贷       | string        |
+| product_date | 发放日期 样例格式 2020-10-10 00:10:30 | bigint        |
+| product_amt  | 发放金额                          | decimal(30,6) |
+| balance      | 借据余额                          | decimal(30,6) |
+| is_buliang   | 状态 是否不良 取值0或1                 | bigint        |
+| overduedays  | 逾期天数                          | bigint        |
 
 
+- 基于流水表和借据表统计以下指标
 
+| 指标     | 当日新增 | 昨日新增 | 历史累计 |
+|--------|------|------|------|
+| 申请户数   |      |      |      |
+| 规则通过户数 |      |      |      |
+| 核额成功户数 |      |      |      |
+| 授信金额   |      |      |      |
+| 平均核额   |      |      |      |
+| 发放金额   |      |      |      |
+| 户均发放金额 |      |      |      |
 
- 
+- 基于借据表统计下述指标
+
+| 产品类型 | 在贷客户数 | 在贷余额 | 不良余额 | 余额不良率 | 不良客户数 | 客户不良率 |
+|------|-------|------|------|-------|-------|-------|
+| xx贷  |       |      |      |       |       |       |
+| yy贷  |       |      |      |       |       |       |
+| zz贷  |       |      |      |       |       |       |
+| 汇总   |       |      |      |       |       |       |
+
+- 基于借据表统计下述指标
+
+| 产品类型     | 户数  | 余额  | 逾期率/不良率 |
+|----------|-----|-----|---------|
+| 逾期1-30天  |     |     |         |
+| 逾期30-90天 |     |     |         |
+| 逾期90天以上  |     |     |         |
+| 逾期合计     |     |     |         |
+| 不良合计     |     |     |         |
+
+- 基于模型输出表统计下述指标
+
+| 统计日期        | 统计指标 | 命中户数 | 命中率 |
+|-------------|------|------|-----|
+| 20201010/累计 | v01  |      |     |
+| 20201010/累计 | v02  |      |     |
+| 20201010/累计 | v03  |      |     |
+| 20201010/累计 | v04  |      |     |
+| 20201010/累计 | v05  |      |     |
+| 20201010/累计 | v06  |      |     |
+
+- 基于借据表统计下述指标，请提供Vintage统计SQl(mbox指的是发放后第X月末的不良余额/发放月金额)
+
+| 发放月份    | 发放金额 | MOB1 | 。。。 | MOB12 |
+|---------|------|------|-----|-------|
+| 2019-10 |      |      |     |       |
+| 2019-11 |      |      |     |       |
+| 2019-12 |      |      |     |       |
+| 2020-01 |      |      |     |       |
+| ....    |      |      |     |       |
+| 2020-12 |      |      |     |       |
+
 
 
 
