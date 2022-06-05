@@ -1,6 +1,6 @@
 ### 启动数据库
 ```
-1. lsnrctl start /lsnrctl stop（不用在sqlplus）    #首先以oracle用户登录系统，启动监听
+1. lsnrctl start /lsnrctl stop（不用在sqlplus）    #首先以oracle用户登录系统,source ~/bash_profile，启动监听
 2. sqlplus  /nolog  #管理员登录，以system用户登录oracle
 3. conn as sysdba   #用户名sys，密码sys
 4. startup/shutdown     #启动/关闭数据库实例
