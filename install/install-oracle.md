@@ -90,6 +90,25 @@
 
 >oracle从12c开始增加了增加了CDB和PDB的概念，数据库引入的多租用户环境（Multitenant Environment）中，允许一个数据库容器（CDB）承载多个可插拔数据库（PDB）。CDB全称为Container Database，中文翻译为数据库容器，PDB全称为Pluggable Database，即可插拔数据库。在ORACLE 12C之前，实例与数据库是一对一或多对一关系（RAC）：即一个实例只能与一个数据库相关联，数据库可以被多个实例所加载。而实例与数据库不可能是一对多的关系。当进入ORACLE 12C后，实例与数据库可以是一对多的关系。
 
+#### 远程连接
+```
+# /opt/oracle/product/19c/dbhome_1/network/admin/listener.ora 
+# 添加
+SID_LIST_LISTENER =
+    (SID_LIST =
+        (SID_DESC =
+        (GLOBAL_DBNAME = ORCLCDB)
+        (ORACLE_HOME = /opt/oracle/product/19c/dbhome_1/)
+        (SID_NAME = ORCLCDB)
+        )
+    )
+
+# 在/etc/hosts 添加当前主机域名，
+# 在tnsnames.ora  默认HOST = 当前主机名
+# 192.168.79.202 当前主机名
+```
+
+
 #### 三个文件的作用
 
 - sqlnet.ora
