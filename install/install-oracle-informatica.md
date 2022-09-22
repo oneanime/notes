@@ -1,5 +1,5 @@
 1. 安装oracle
-2. 创建用户（oracle的用户相当于mysql的数据库概念）。在安装时可以选择安装额组件，至少，要创建前两个用户
+2. 创建用户（oracle的用户相当于mysql的数据库概念）。在安装时可以选择安装的组件，至少，要创建前两个用户
 ```
 #Domain
 create user c##infa_domain_test identified by 123456;
