@@ -52,6 +52,7 @@ Comment with Block Comment                                                     C
   勾选 introspect using JDBC metadata
   ```
   
-  
+破解地址：
+https://zhile.io/
   
   
