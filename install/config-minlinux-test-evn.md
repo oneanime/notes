@@ -43,4 +43,7 @@ vim /etc/hosts
 > hostnamectl set-hostname [hostname]
 
 阿里云镜像https://developer.aliyun.com/mirror/centos?spm=a2c6h.13651102.0.0.3e221b11kt2Zye
+>下载源后，执行下面命令，再 yum makecache
+>sudo sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-*
+>sudo sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-*
 
