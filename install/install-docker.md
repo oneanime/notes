@@ -27,7 +27,13 @@ sudo systemctl enable docker
 
 #配置阿里云源  https://help.aliyun.com/document_detail/60750.html
 登录阿里云账号根据步骤操作即可
-
+{
+  "registry-mirrors": ["https://xxxx.mirror.aliyuncs.com",
+                       "https://docker.mirrors.ustc.edu.cn",
+                       "https://registry.docker-cn.com",
+                       "http://hub-mirror.c.163.com"],
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
 #配置远程连接
 vim /lib/systemd/system/docker.service
 找到ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock

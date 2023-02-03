@@ -52,8 +52,109 @@ kubeadm join 192.168.79.105:6443 --token e3eyrb.tf07fdy40mst1umv \
 	--discovery-token-ca-cert-hash sha256:f832340c1f33a2deec48d5acb42a1fe6a9f55f102c48fbf15145e9da41bbfd4b
 
 ```
-6.安装网络插件 kube-flannel.yml 并 应用获取运行中容器
+6.安装网络插件kube-flannel.yml并应用获取运行中容器
 ```
 wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 kubectl apply -f kube-flannel.yml
+# kube-flannel.yml其中会下载镜像。国内可能会下不下来，去GitHub下载docker离线镜像，导入到docker中
+https://github.com/flannel-io/flannel/releases
+# flannel-cni-plugin只配置阿里云源，下不下来，docker中多配几个国内源
+```
+7. 安装ingress
+```
+https://github.com/kubernetes/ingress-nginx/blob/main/deploy/static/provider/cloud/deploy.yaml
+# 复制到本地，修改镜像源和镜像版本，例如
+# nginx-ingress-controller
+registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:v1.5.1
+# kube-webhook-certgen
+registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v20220916-gd32f8c343
+
+kubectl apply -f deploy.yaml
+```
+8. 安装dashboard
+```
+#查看版本兼容，下载deployments文件
+https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
+# 修改镜像源
+registry.cn-hangzhou.aliyuncs.com/google_containers/dashboard:v2.5.1
+registry.cn-hangzhou.aliyuncs.com/google_containers/metrics-scraper:v1.0.7
+```
+```
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  type: NodePort        #添加NodePort
+  externalIPs:
+    - 192.168.79.105   #访问的地址
+  ports:
+    - port: 443
+      targetPort: 8443
+      nodePort: 30000   #暴露的端口
+  selector:
+    k8s-app: kubernetes-dashboard
+```
+```
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -F
+iptables -L -n
+```
+```
+# 生成证书
+mkdir cert
+cd cert/
+openssl genrsa -out dashboard.key 2048
+openssl req -days 36000 -new -out dashboard.csr -key dashboard.key -subj '/CN=**192.168.79.105**'
+openssl x509 -req -in dashboard.csr -signkey dashboard.key -out dashboard.crt
+kubectl create secret generic kubernetes-dashboard-certs --from-file=dashboard.key --from-file=dashboard.crt -n kubernetes-dashboard
+```
+```
+# 添加证书
+args:
+- --auto-generate-certificates
+- --namespace=kubernetes-dashboard
+- --tls-key-file=dashboard.key
+- --tls-cert-file=dashboard.crt
+
+
+kubectl apply -f xxx.yaml     
+```
+```
+# 访问谷歌浏览器时会报错，鼠标点击空包处，键盘打字  thisisunsafe  ,回车。或者用火狐浏览器
+# 生成token，浏览器上要使用
+vim create-admin.yaml
+```
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+ 
+```
+```
+kubectl apply -f create-admin.yaml
+# 查看sa和secret
+kubectl get sa,secrets -n kubernetes-dashboard
+kubectl describe secret admin-user-token-xxxx -n kubernetes-dashboard
 ```
