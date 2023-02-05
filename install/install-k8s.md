@@ -1,5 +1,5 @@
 1. 集群配置免密码
-2. 安装docker    
+2. 安装docker(安装20.10.x或以下版本，https://docs.docker.com/engine/release-notes/20.10/)
 3. 安装kubelet kubeadm kubectl(所有节点)
 ```
 # 官网是谷歌源，配置国内源
