@@ -54,10 +54,13 @@ kubeadm join 192.168.79.105:6443 --token e3eyrb.tf07fdy40mst1umv \
 ```
 6.安装网络插件kube-flannel.yml并应用获取运行中容器
 ```
-wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+https://github.com/flannel-io/flannel/blob/master/Documentation/kube-flannel.yml
 kubectl apply -f kube-flannel.yml
 # kube-flannel.yml其中会下载镜像。国内可能会下不下来，去GitHub下载docker离线镜像，导入到docker中
 https://github.com/flannel-io/flannel/releases
+# 每个节点都有装
+docker load < flanneld-v0.20.2-arm64.docker
+把kube-flannel.yml中镜像换成quay.io/coreos/flannel:v0.20.2-arm64
 # flannel-cni-plugin只配置阿里云源，下不下来，docker中多配几个国内源
 ```
 7. 安装ingress

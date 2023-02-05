@@ -48,6 +48,10 @@ service docker restart
 # https://github.com/docker/compose/tags
 # https://docs.docker.com/compose/install/
 # python2版本下载docker-compose1.24.1之前的版本
+https://github.com/docker/compose/releases/tag/v2.4.1
+mv docker-compose /usr/local/bin
+chmod +x /usr/local/bin/docker-compose
+docker-compose version
 ```
 
 window安装 [ 具体步骤见官网,以下为一些可选步骤 ]
