@@ -1,4 +1,9 @@
 1. 集群配置免密码
+```
+# 关闭swap，注释掉swap那一行
+sudo vim /etc/fstab
+
+```
 2. 安装docker(安装20.10.x或以下版本，https://docs.docker.com/engine/release-notes/20.10/)
 3. 安装kubelet kubeadm kubectl(所有节点)
 ```

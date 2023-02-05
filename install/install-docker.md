@@ -20,6 +20,8 @@ sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/cen
 # Step 3: 更新并安装 Docker-CE
 sudo yum makecache fast
 sudo yum -y install docker-ce
+# 安装指定版本https://docs.docker.com/engine/release-notes/20.10/
+sudo yum -y install docker-ce-20.10.23 -y
 # Step 4: 开启Docker服务
 sudo service docker start
 # 开机启动
