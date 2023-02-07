@@ -64,9 +64,12 @@ kubectl apply -f kube-flannel.yml
 # kube-flannel.yml其中会下载镜像。国内可能会下不下来，去GitHub下载docker离线镜像，导入到docker中
 https://github.com/flannel-io/flannel/releases
 # 每个节点都有装
-docker load < flanneld-v0.20.2-arm64.docker
-把kube-flannel.yml中镜像换成quay.io/coreos/flannel:v0.20.2-arm64
-# flannel-cni-plugin只配置阿里云源，下不下来，docker中多配几个国内源
+#docker load < flanneld-v0.20.2-arm64.docker
+#把kube-flannel.yml中镜像换成quay.io/coreos/flannel:v0.20.2-arm64
+
+#已经下载导出到GitHub上
+https://github.com/oneanime/notes/tree/master/install/packages
+# flannel-cni-plugin和flannel只配置阿里云源，下不下来，docker中多配几个国内源，就可有下载下来，不过网速不一定稳定，多试几次
 ```
 7. 安装ingress
 ```
