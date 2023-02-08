@@ -74,11 +74,14 @@ https://github.com/oneanime/notes/tree/master/install/packages
 7. 安装ingress
 ```
 https://github.com/kubernetes/ingress-nginx/blob/main/deploy/static/provider/cloud/deploy.yaml
+F:\project\git\repo\notes\install\packages
 # 复制到本地，修改镜像源和镜像版本，例如
 # nginx-ingress-controller
 registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:v1.5.1
 # kube-webhook-certgen
 registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v20220916-gd32f8c343
+
+
 
 kubectl apply -f deploy.yaml
 ```
