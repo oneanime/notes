@@ -184,6 +184,7 @@ services:
 ############################################
 docker-compose up -d    # 必须在docker-compose.yml所在路径下执行
 docker-compose logs -f  # 查看启动日志
+docker-compose -p [name] down --remove-orphans  #删除
 
 ```
 
