@@ -29,3 +29,32 @@ docker images
 docker tag [IMAGE ID] 192.168.79.104:8089/library/mysql:latest
 docker push 192.168.79.104:8089/library/mysql:latest
 ```
+7. 批量脚本
+```
+#!/bin/bash
+
+# 批量打标签
+g1="192"
+
+arr1=`docker images | grep $g1 | awk '{gsub(/k8s/,"registry.k8s.io");print "docker#tag#"$3"#"$1":"$2}'`
+
+for a1 in $arr1
+do
+    `echo $a1 | awk '{gsub(/#/," ");print $0}'`
+     echo $a1 | awk '{gsub(/#/," ");print $0}'
+done
+```
+```
+#!/bin/bash
+
+# 批量push
+g1="registry.k8s.io"
+
+arr1=`docker images | grep $g1 | awk '{print "docker#push#"$1":"$2}'`
+echo $arr1
+for a1 in $arr1
+do
+    `echo $a1 | awk '{gsub(/#/," ");print $0}'`
+     echo $a1 | awk '{gsub(/#/," ");print $0}'
+done
+```

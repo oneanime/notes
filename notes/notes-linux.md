@@ -69,3 +69,11 @@ vim /etc/fstab
 # 末尾添加 
 uuid 挂载的目录[如：/mnt] type defaults 0 2
 ```
+```
+# 在写shell的时候，for 循环默认是按照空格来切割的，通过以下修改来实现按行切割
+IFS.OLD=$IFS
+IFS=$'\n'
+# 还原
+IFS=$IFS.OLD
+
+```
