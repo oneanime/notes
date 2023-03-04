@@ -2,6 +2,11 @@
 ```
 # 关闭swap，注释掉swap那一行
 sudo vim /etc/fstab
+# 时间同步
+yum install chrony -y
+systemctl start chronyd
+systemctl enable chronyd
+chronyc sources
 
 ```
 2. 安装docker(安装20.10.x或以下版本，https://docs.docker.com/engine/release-notes/20.10/)
@@ -33,6 +38,7 @@ kubeadm config print init-defaults > kubeadm.yaml
 ## 修改配置
 advertiseAddress: master_ip
 imageRepository: registry.aliyuncs.com/google_containers
+nodeRegistration下的name 修改为hostname，如master105
 networking下添加     podSubnet: 10.244.0.0/16
 
 # 修改配置文件，否则下载镜像会报错
