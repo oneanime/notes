@@ -8,6 +8,14 @@ systemctl start chronyd
 systemctl enable chronyd
 chronyc sources
 
+# 将桥接的IPv4流量传递到iptables的链
+cat > /etc/sysctl.d/k8s.conf << EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+sysctl --system
+
 ```
 2. 安装docker(安装20.10.x或以下版本，https://docs.docker.com/engine/release-notes/20.10/)
 3. 安装kubelet kubeadm kubectl(所有节点)
