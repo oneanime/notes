@@ -79,6 +79,8 @@ docker rm -f 镜像id/镜像名1:TAG 镜像id/镜像名2:TAG
 docker rmi -f ${docker images -qa}
 # 删除多有镜像
 docker rmi $(docker images -q)
+# 批量删镜像
+docker rmi -f $(docker images | grep "   " | awk '{print $3}') 
 ```
 
 ###### 5. 容器启动、停止、重启
