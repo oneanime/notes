@@ -1,19 +1,19 @@
 basic complete                     Alt+/  
 Smart Type                          Ctrl+/  
 Type Info(返回的类型)            Alt+.  
-Pararmeter Info                    Alt+,  
+Parameter Info                    Alt+,  
 Reformat Code                    Ctrl+Alt+Enter Ctrl+Alt+L  
 Reformat File                       Ctrl+Alt+Shift+L  
-Quick Decoument                Alt+'  
+Quick Document                Alt+'  
 Generate                             Alt+n  
 Go to Implementation(接口实现类)         Alt+;  
 Type Hierarchy（接口实现类bar）           Ctrl+;  
 Introduce Variable(抓取变量)                  Ctrl+Alt+V  
 Comment with Line Comment                                                   Ctrl+Alt+/  
 Comment with Block Comment                                                     Ctrl+Shift+/ 
-
-
-
+Toggle Case （大小写转换）                       Ctrl+w
+Extend Selection (选中单词)                      Ctrl+q        
+Optimize Imports                                Ctrl+Alt+q
 * 启动报错
 
   ```
