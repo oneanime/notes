@@ -43,6 +43,22 @@ vim /lib/systemd/system/docker.service
 systemctl daemon-reload
 service docker restart
 ```
+```
+wsl2中的镜像模式中配置docker的代理
+镜像模式中，使用clash代理
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo vim /etc/systemd/system/docker.service.d/http-proxy.conf
+##添加以下内容
+[Service]
+Environment="HTTP_PROXY=http://代理服务器:端口"
+Environment="HTTPS_PROXY=http://代理服务器:端口"
+Environment="NO_PROXY=localhost,127.0.0.1"
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+```
 
 安装docker-compose
 
